@@ -165,6 +165,42 @@
     line-height: 1.6;
   }
 
+  .city-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    margin-top: 1.3rem;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.52rem 0.8rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.03);
+    color: var(--cream);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    backdrop-filter: blur(8px);
+    animation: floatChip 6s ease-in-out infinite;
+  }
+
+  .chip:nth-child(2) { animation-delay: 0.9s; }
+  .chip:nth-child(3) { animation-delay: 1.7s; }
+
+  .chip::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 12px rgba(240,199,106,0.9);
+  }
+
   .timer-panel {
     margin-top: 2.5rem;
     display: inline-flex;
@@ -175,6 +211,74 @@
     border-radius: 24px;
     background: rgba(14, 22, 24, 0.42);
     box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+  }
+
+  .timer-wrap {
+    display: flex;
+    align-items: center;
+    gap: 1.3rem;
+  }
+
+  .countdown-ring {
+    position: relative;
+    width: 138px;
+    height: 138px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(247,241,232,0.06) 0%, rgba(17,36,38,0.2) 58%, rgba(17,36,38,0.8) 100%);
+    box-shadow: inset 0 0 18px rgba(255,255,255,0.04);
+  }
+
+  .countdown-ring svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+
+  .countdown-ring .bg {
+    fill: none;
+    stroke: rgba(255,255,255,0.08);
+    stroke-width: 8;
+  }
+
+  .countdown-ring .progress {
+    fill: none;
+    stroke: url(#ringGradient);
+    stroke-width: 8;
+    stroke-linecap: round;
+    stroke-dasharray: 314;
+    stroke-dashoffset: 314;
+    transition: stroke-dashoffset 0.9s ease;
+  }
+
+  .countdown-ring .inner {
+    position: absolute;
+    inset: 18px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: rgba(9, 18, 19, 0.82);
+    border: 1px solid rgba(255,255,255,0.08);
+    text-align: center;
+  }
+
+  .countdown-ring .ring-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: var(--cream);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .countdown-ring .ring-label {
+    display: block;
+    margin-top: 0.2rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.56rem;
+    letter-spacing: 0.12em;
+    color: var(--sage);
+    text-transform: uppercase;
   }
 
   .timer {
@@ -260,6 +364,7 @@
     background-position: center;
     box-shadow: 0 24px 56px rgba(0,0,0,0.26);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: floatPhoto 6s ease-in-out infinite;
   }
 
   .photo-card:hover {
@@ -267,11 +372,15 @@
     box-shadow: 0 30px 64px rgba(0,0,0,0.32);
   }
 
+  .photo-main { animation-delay: 0.2s; }
+  .small-one { animation-delay: 0.8s; }
+  .small-two { animation-delay: 1.4s; }
+
   .photo-main {
     height: 21rem;
     background-image:
-      linear-gradient(180deg, rgba(8, 17, 19, 0.08), rgba(8,17,19,0.62)),
-      url('https://images.unsplash.com/photo-1505761671935-60ebc70fe647?auto=format&fit=crop&w=1200&q=80');
+      linear-gradient(180deg, rgba(8, 17, 19, 0.12), rgba(8,17,19,0.62)),
+      url('https://upload.wikimedia.org/wikipedia/commons/9/9c/Utrecht_Canal_Pride_2018%2C_03.jpg');
   }
 
   .mini-cards {
@@ -286,14 +395,14 @@
 
   .small-one {
     background-image:
-      linear-gradient(180deg, rgba(8,17,19,0.08), rgba(8,17,19,0.55)),
-      url('https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?auto=format&fit=crop&w=900&q=80');
+      linear-gradient(180deg, rgba(8,17,19,0.12), rgba(8,17,19,0.55)),
+      url('https://upload.wikimedia.org/wikipedia/commons/6/6c/Domtoren_Utrecht_-_1.jpg');
   }
 
   .small-two {
     background-image:
-      linear-gradient(180deg, rgba(8,17,19,0.08), rgba(8,17,19,0.55)),
-      url('https://images.unsplash.com/photo-1520986606214-8d7f88d6b6b9?auto=format&fit=crop&w=900&q=80');
+      linear-gradient(180deg, rgba(8,17,19,0.12), rgba(8,17,19,0.55)),
+      url('https://upload.wikimedia.org/wikipedia/commons/4/4f/Caf%C3%A9_in_Hoog_Catharijne.jpg');
   }
 
   .card-label {
@@ -361,6 +470,16 @@
     50% { opacity: 1; transform: scale(1.1); }
   }
 
+  @keyframes floatChip {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-3px); }
+  }
+
+  @keyframes floatPhoto {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-6px); }
+  }
+
   @media (max-width: 900px) {
     .hero { grid-template-columns: 1fr; }
     .visual-column { max-width: 32rem; width: 100%; margin: 0 auto; }
@@ -409,15 +528,43 @@
         <h1>Welkom <em>in</em> Utrecht, Paula!</h1>
         <p class="subtitle" id="subtitle">Nog even geduld — dan sta je middenin de grachten.</p>
 
+        <div class="city-tags" aria-label="Utrecht highlights">
+          <span class="chip">Oudegracht</span>
+          <span class="chip">Domtoren</span>
+          <span class="chip">Janskerkhof</span>
+        </div>
+
         <div class="timer-panel">
-          <div class="timer" aria-live="polite">
-            <div class="unit"><span class="value" id="days">00</span><span class="label">dagen</span></div>
-            <span class="divider">:</span>
-            <div class="unit"><span class="value" id="hours">00</span><span class="label">uren</span></div>
-            <span class="divider">:</span>
-            <div class="unit"><span class="value" id="minutes">00</span><span class="label">minuten</span></div>
-            <span class="divider">:</span>
-            <div class="unit"><span class="value" id="seconds">00</span><span class="label">seconden</span></div>
+          <div class="timer-wrap">
+            <div class="countdown-ring" aria-label="Aankomst countdown">
+              <svg viewBox="0 0 120 120" role="img" aria-hidden="true">
+                <defs>
+                  <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#f0c76a" />
+                    <stop offset="50%" stop-color="#cc7f60" />
+                    <stop offset="100%" stop-color="#8dd4d0" />
+                  </linearGradient>
+                </defs>
+                <circle class="bg" cx="60" cy="60" r="50"></circle>
+                <circle class="progress" cx="60" cy="60" r="50"></circle>
+              </svg>
+              <div class="inner">
+                <div>
+                  <div class="ring-value" id="ringValue">00</div>
+                  <span class="ring-label">dagen</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="timer" aria-live="polite">
+              <div class="unit"><span class="value" id="days">00</span><span class="label">dagen</span></div>
+              <span class="divider">:</span>
+              <div class="unit"><span class="value" id="hours">00</span><span class="label">uren</span></div>
+              <span class="divider">:</span>
+              <div class="unit"><span class="value" id="minutes">00</span><span class="label">minuten</span></div>
+              <span class="divider">:</span>
+              <div class="unit"><span class="value" id="seconds">00</span><span class="label">seconden</span></div>
+            </div>
           </div>
           <div class="timer-foot">Naar de Domtoren</div>
         </div>
@@ -425,12 +572,12 @@
 
       <aside class="visual-column" aria-label="Utrecht inspiration">
         <div class="photo-card photo-main">
-          <span class="card-label">Grachten</span>
+          <span class="card-label">Oudegracht</span>
         </div>
 
         <div class="mini-cards">
           <div class="photo-card small small-one">
-            <span class="card-label">Dom</span>
+            <span class="card-label">Domtoren</span>
           </div>
           <div class="photo-card small small-two">
             <span class="card-label">Cafés</span>
@@ -448,11 +595,24 @@
 
     const subtitle = document.getElementById('subtitle');
     const target = new Date(TARGET_DATE).getTime();
+    const ring = document.querySelector('.progress');
+    const ringValue = document.getElementById('ringValue');
 
     subtitle.textContent = SUBTITLE_TEXT;
 
     function pad(value) {
       return String(value).padStart(2, '0');
+    }
+
+    function updateRing(daysLeft, totalDays) {
+      const radius = 50;
+      const circumference = 2 * Math.PI * radius;
+      const progressRatio = Math.max(0, Math.min(1, daysLeft / totalDays));
+      const offset = circumference * (1 - progressRatio);
+
+      ring.style.strokeDasharray = String(circumference);
+      ring.style.strokeDashoffset = String(offset);
+      ringValue.textContent = pad(daysLeft);
     }
 
     function tick() {
@@ -465,6 +625,8 @@
         document.getElementById('minutes').textContent = '00';
         document.getElementById('seconds').textContent = '00';
         subtitle.textContent = 'Welkom thuis in Utrecht. 🎉';
+        ringValue.textContent = '00';
+        ring.style.strokeDashoffset = '314';
         clearInterval(timerInterval);
         return;
       }
@@ -478,6 +640,9 @@
       document.getElementById('hours').textContent = pad(hours);
       document.getElementById('minutes').textContent = pad(minutes);
       document.getElementById('seconds').textContent = pad(seconds);
+
+      const totalDays = 30;
+      updateRing(days, totalDays);
     }
 
     tick();
