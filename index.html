@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
   :root {
     --ink: #0d1f22;
@@ -229,8 +230,10 @@
 
   .gallery-head {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.9rem;
     margin-bottom: 1.3rem;
   }
 
@@ -306,6 +309,94 @@
 
   .gallery-remove:hover {
     background: rgba(204, 127, 96, 0.85);
+  }
+
+  .gallery-download {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(9, 18, 19, 0.72);
+    color: var(--cream);
+    font-size: 0.8rem;
+    line-height: 1;
+    cursor: pointer;
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: opacity 0.2s ease, background 0.2s ease;
+  }
+
+  .gallery-tile:hover .gallery-download {
+    opacity: 1;
+  }
+
+  .gallery-download:hover {
+    background: rgba(240, 199, 106, 0.85);
+    color: var(--ink);
+  }
+
+  .gallery-head-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+  }
+
+  .gallery-download-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.75rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.14);
+    background: rgba(255,255,255,0.03);
+    color: var(--sage);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .gallery-download-all:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  .gallery-download-all:disabled {
+    opacity: 0.4;
+    cursor: default;
+    border-color: rgba(255,255,255,0.14);
+    color: var(--sage);
+  }
+
+  .gallery-add-header {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.75rem;
+    border-radius: 999px;
+    border: 1px solid var(--gold);
+    background: rgba(240, 199, 106, 0.1);
+    color: var(--gold);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+
+  .gallery-add-header:hover {
+    background: var(--gold);
+    color: var(--ink);
   }
 
   .gallery-add {
@@ -521,10 +612,13 @@
 
       <div class="signal-stack" aria-label="Signal artwork collection">
         <div class="signal-photo" aria-label="Signal artwork one">
-          <img src="signal-2026-08-29-14-23-35-847.jpg" alt="Signal artwork one" />
+          <img src="media/daphne.jpg" alt="Signal artwork one" />
         </div>
         <div class="signal-photo" aria-label="Signal artwork two">
-          <img src="signal-2026-08-29-14-27-08-301.jpg" alt="Signal artwork two" />
+          <img src="media/paula_crazy.jpg" alt="Signal artwork two" />
+        </div>
+        <div class="signal-photo" aria-label="Signal artwork two">
+          <img src="media/valentin.jpg" alt="Signal artwork two" />
         </div>
       </div>
     </section>
@@ -532,7 +626,11 @@
     <section class="gallery-section" aria-label="Foto's van het bezoek">
       <div class="gallery-head">
         <span class="gallery-title">Foto's van het bezoek</span>
-        <span class="gallery-count" id="galleryCount">0 foto's</span>
+        <div class="gallery-head-actions">
+          <button class="gallery-add-header" id="galleryAddBtnHeader" type="button">+ Foto toevoegen</button>
+          <button class="gallery-download-all" id="downloadAllBtn" type="button" disabled>Alles downloaden</button>
+          <span class="gallery-count" id="galleryCount">0 foto's</span>
+        </div>
       </div>
       <div class="gallery-grid" id="galleryGrid">
         <button class="gallery-add" id="galleryAddBtn" type="button">
@@ -601,9 +699,11 @@
     const GALLERY_INDEX_KEY = 'gallery-index';
     const galleryGrid = document.getElementById('galleryGrid');
     const galleryAddBtn = document.getElementById('galleryAddBtn');
+    const galleryAddBtnHeader = document.getElementById('galleryAddBtnHeader');
     const galleryInput = document.getElementById('galleryInput');
     const galleryCount = document.getElementById('galleryCount');
     const galleryStatus = document.getElementById('galleryStatus');
+    const downloadAllBtn = document.getElementById('downloadAllBtn');
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightboxImg');
     const lightboxClose = document.getElementById('lightboxClose');
@@ -691,6 +791,7 @@
 
     function updateCount(n) {
       galleryCount.textContent = n === 1 ? '1 foto' : `${n} foto's`;
+      downloadAllBtn.disabled = n === 0;
     }
 
     function openLightbox(src) {
@@ -708,6 +809,15 @@
       if (e.target === lightbox) closeLightbox();
     });
 
+    function downloadDataUrl(dataUrl, filename) {
+      const link = document.createElement('a');
+      link.href = dataUrl;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    }
+
     function makeTile(id, dataUrl) {
       const tile = document.createElement('div');
       tile.className = 'gallery-tile';
@@ -718,9 +828,20 @@
       img.alt = 'Foto van het bezoek';
       img.addEventListener('click', () => openLightbox(dataUrl));
 
+      const downloadBtn = document.createElement('button');
+      downloadBtn.className = 'gallery-download';
+      downloadBtn.type = 'button';
+      downloadBtn.title = 'Downloaden';
+      downloadBtn.textContent = '⬇';
+      downloadBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        downloadDataUrl(dataUrl, `utrecht-${id}.jpg`);
+      });
+
       const removeBtn = document.createElement('button');
       removeBtn.className = 'gallery-remove';
       removeBtn.type = 'button';
+      removeBtn.title = 'Verwijderen';
       removeBtn.textContent = '✕';
       removeBtn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -728,6 +849,7 @@
       });
 
       tile.appendChild(img);
+      tile.appendChild(downloadBtn);
       tile.appendChild(removeBtn);
       return tile;
     }
@@ -838,10 +960,47 @@
     }
 
     galleryAddBtn.addEventListener('click', () => galleryInput.click());
+    galleryAddBtnHeader.addEventListener('click', () => galleryInput.click());
     galleryInput.addEventListener('change', (e) => {
       const files = Array.from(e.target.files || []);
       if (files.length) addPhotos(files);
       galleryInput.value = '';
+    });
+
+    downloadAllBtn.addEventListener('click', async () => {
+      if (typeof JSZip === 'undefined') {
+        setStatus('Zip-bibliotheek kon niet worden geladen — controleer je internetverbinding.');
+        return;
+      }
+      downloadAllBtn.disabled = true;
+      setStatus('Zip-bestand maken…');
+      try {
+        const ids = await getIndex();
+        const zip = new JSZip();
+        let count = 0;
+        for (const id of ids) {
+          const result = await storageGet(`gallery-photo:${id}`);
+          if (result && result.value) {
+            const base64 = result.value.split(',')[1];
+            zip.file(`utrecht-${id}.jpg`, base64, { base64: true });
+            count++;
+          }
+        }
+        if (count === 0) {
+          setStatus('Geen foto\u2019s om te downloaden.');
+          return;
+        }
+        const blob = await zip.generateAsync({ type: 'blob' });
+        const url = URL.createObjectURL(blob);
+        downloadDataUrl(url, 'utrecht-fotos.zip');
+        URL.revokeObjectURL(url);
+        setStatus('');
+      } catch (err) {
+        console.error(err);
+        setStatus('Kon zip-bestand niet maken.');
+      } finally {
+        downloadAllBtn.disabled = false;
+      }
     });
 
     loadGallery();
