@@ -521,10 +521,10 @@
 
       <div class="signal-stack" aria-label="Signal artwork collection">
         <div class="signal-photo" aria-label="Signal artwork one">
-          <img src="media/valentin.jpg" alt="Valiiii" />
+          <img src="signal-2026-08-29-14-23-35-847.jpg" alt="Signal artwork one" />
         </div>
         <div class="signal-photo" aria-label="Signal artwork two">
-          <img src="media/daphne.jpg" alt="Daphneee" />
+          <img src="signal-2026-08-29-14-27-08-301.jpg" alt="Signal artwork two" />
         </div>
       </div>
     </section>
@@ -608,7 +608,82 @@
     const lightboxImg = document.getElementById('lightboxImg');
     const lightboxClose = document.getElementById('lightboxClose');
 
-    const storageAvailable = !!(window.storage && typeof window.storage.get === 'function');
+    // Storage layer: prefer Claude's window.storage (works when viewed inside
+    // Claude). When this file is downloaded and opened directly in a normal
+    // browser, window.storage won't exist, so we fall back to localStorage,
+    // and finally to an in-memory Map if even that is blocked (e.g. some
+    // browsers restrict localStorage for file:// pages).
+    const memoryStore = new Map();
+    const LS_PREFIX = 'utrecht-gallery::';
+    let storageMode = 'memory';
+
+    function lsAvailable() {
+      try {
+        const testKey = '__utrecht_gallery_test__';
+        localStorage.setItem(testKey, '1');
+        localStorage.removeItem(testKey);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    if (window.storage && typeof window.storage.get === 'function') {
+      storageMode = 'claude';
+    } else if (lsAvailable()) {
+      storageMode = 'local';
+    }
+
+    async function storageGet(key) {
+      if (storageMode === 'claude') {
+        try {
+          return await window.storage.get(key, false);
+        } catch (e) {
+          return null;
+        }
+      }
+      if (storageMode === 'local') {
+        const raw = localStorage.getItem(LS_PREFIX + key);
+        return raw !== null ? { key, value: raw } : null;
+      }
+      return memoryStore.has(key) ? { key, value: memoryStore.get(key) } : null;
+    }
+
+    async function storageSet(key, value) {
+      if (storageMode === 'claude') {
+        try {
+          return await window.storage.set(key, value, false);
+        } catch (e) {
+          return null;
+        }
+      }
+      if (storageMode === 'local') {
+        try {
+          localStorage.setItem(LS_PREFIX + key, value);
+          return { key, value };
+        } catch (e) {
+          return null;
+        }
+      }
+      memoryStore.set(key, value);
+      return { key, value };
+    }
+
+    async function storageDelete(key) {
+      if (storageMode === 'claude') {
+        try {
+          return await window.storage.delete(key, false);
+        } catch (e) {
+          return null;
+        }
+      }
+      if (storageMode === 'local') {
+        localStorage.removeItem(LS_PREFIX + key);
+        return { key, deleted: true };
+      }
+      memoryStore.delete(key);
+      return { key, deleted: true };
+    }
 
     function setStatus(msg) {
       galleryStatus.textContent = msg || '';
@@ -659,7 +734,7 @@
 
     async function getIndex() {
       try {
-        const result = await window.storage.get(GALLERY_INDEX_KEY, false);
+        const result = await storageGet(GALLERY_INDEX_KEY);
         if (result && result.value) return JSON.parse(result.value);
         return [];
       } catch (err) {
@@ -669,24 +744,19 @@
 
     async function saveIndex(ids) {
       try {
-        await window.storage.set(GALLERY_INDEX_KEY, JSON.stringify(ids), false);
+        await storageSet(GALLERY_INDEX_KEY, JSON.stringify(ids));
       } catch (err) {
         console.error('Kon fotolijst niet opslaan', err);
       }
     }
 
     async function loadGallery() {
-      if (!storageAvailable) {
-        setStatus('Foto-opslag is hier niet beschikbaar.');
-        updateCount(0);
-        return;
-      }
       setStatus('Foto\u2019s laden…');
       const ids = await getIndex();
       updateCount(ids.length);
       for (const id of ids) {
         try {
-          const result = await window.storage.get(`gallery-photo:${id}`, false);
+          const result = await storageGet(`gallery-photo:${id}`);
           if (result && result.value) {
             galleryGrid.insertBefore(makeTile(id, result.value), galleryAddBtn);
           }
@@ -694,7 +764,11 @@
           // skip missing/broken entries
         }
       }
-      setStatus('');
+      if (storageMode === 'memory') {
+        setStatus('Let op: foto\u2019s blijven alleen bewaard zolang deze pagina open staat.');
+      } else {
+        setStatus('');
+      }
     }
 
     function resizeImage(file, maxDim = 1600, quality = 0.85) {
@@ -725,10 +799,6 @@
     }
 
     async function addPhotos(files) {
-      if (!storageAvailable) {
-        setStatus('Foto-opslag is hier niet beschikbaar.');
-        return;
-      }
       const ids = await getIndex();
       for (const file of files) {
         if (!file.type.startsWith('image/')) continue;
@@ -736,23 +806,27 @@
         try {
           const dataUrl = await resizeImage(file);
           const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-          const result = await window.storage.set(`gallery-photo:${id}`, dataUrl, false);
+          const result = await storageSet(`gallery-photo:${id}`, dataUrl);
           if (!result) throw new Error('Opslaan mislukt');
           ids.push(id);
           galleryGrid.insertBefore(makeTile(id, dataUrl), galleryAddBtn);
           updateCount(ids.length);
         } catch (err) {
           console.error(err);
-          setStatus(`Kon "${file.name}" niet opslaan.`);
+          setStatus(`Kon "${file.name}" niet opslaan${storageMode === 'local' ? ' (mogelijk te groot voor lokale opslag)' : ''}.`);
         }
       }
       await saveIndex(ids);
-      setStatus('');
+      if (storageMode === 'memory') {
+        setStatus('Let op: foto\u2019s blijven alleen bewaard zolang deze pagina open staat.');
+      } else {
+        setStatus('');
+      }
     }
 
     async function removePhoto(id, tileEl) {
       try {
-        await window.storage.delete(`gallery-photo:${id}`, false);
+        await storageDelete(`gallery-photo:${id}`);
         const ids = (await getIndex()).filter((existing) => existing !== id);
         await saveIndex(ids);
         tileEl.remove();
