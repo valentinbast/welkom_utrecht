@@ -97,7 +97,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 42px;
+    margin-bottom: 36px;
     color: var(--sage);
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.72rem;
@@ -120,44 +120,13 @@
     box-shadow: 0 0 18px rgba(240,199,106,0.9);
   }
 
-  .signal-stack {
-    display: flex;
-    justify-content: center;
-    gap: 0.8rem;
-    margin: 0 auto 1.25rem;
-  }
-
-  .signal-photo {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 2px solid rgba(255,255,255,0.18);
-    box-shadow: 0 18px 40px rgba(0,0,0,0.28);
-    background: rgba(255,255,255,0.04);
-  }
-
-  .signal-photo img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
-  .status {
-    padding: 0.5rem 0.9rem;
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 999px;
-    background: rgba(255,255,255,0.02);
-  }
-
-  .hero {
+  /* --- Intro (secondary, compact) --- */
+  .intro {
     position: relative;
     z-index: 2;
-    display: grid;
-    grid-template-columns: 1.25fr 0.95fr;
-    gap: clamp(30px, 4vw, 52px);
-    align-items: center;
+    text-align: center;
+    max-width: 46rem;
+    margin: 0 auto 2.6rem;
   }
 
   .eyebrow {
@@ -166,16 +135,15 @@
     letter-spacing: 0.28em;
     text-transform: uppercase;
     color: var(--sage);
-    margin-bottom: 1.2rem;
+    margin-bottom: 1rem;
   }
 
   h1 {
     font-family: 'Fraunces', serif;
     font-weight: 600;
-    font-size: clamp(2.6rem, 6vw, 5.2rem);
-    line-height: 0.95;
-    letter-spacing: -0.04em;
-    max-width: 12ch;
+    font-size: clamp(2rem, 4.4vw, 3.4rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
   }
 
   h1 em {
@@ -185,9 +153,9 @@
   }
 
   .subtitle {
-    margin-top: 1.2rem;
-    max-width: 32rem;
-    font-size: clamp(1rem, 1.8vw, 1.2rem);
+    margin: 1rem auto 0;
+    max-width: 30rem;
+    font-size: 1rem;
     color: var(--sage);
     line-height: 1.6;
   }
@@ -195,6 +163,7 @@
   .city-tags {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     gap: 0.7rem;
     margin-top: 1.3rem;
   }
@@ -228,235 +197,194 @@
     box-shadow: 0 0 12px rgba(240,199,106,0.9);
   }
 
-  .timer-panel {
-    margin-top: 2.5rem;
-    display: inline-flex;
-    flex-direction: column;
-    gap: 1rem;
-    padding: 1.1rem 1.2rem 1.25rem;
-    border: 1px solid var(--panel-border);
-    border-radius: 24px;
-    background: rgba(14, 22, 24, 0.42);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
-  }
-
-  .timer-wrap {
+  .signal-stack {
     display: flex;
-    align-items: center;
-    gap: 1.3rem;
+    justify-content: center;
+    gap: 0.8rem;
+    margin: 1.6rem auto 0;
   }
 
-  .countdown-ring {
-    position: relative;
-    width: 138px;
-    height: 138px;
-    display: grid;
-    place-items: center;
+  .signal-photo {
+    width: 92px;
+    height: 92px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(247,241,232,0.06) 0%, rgba(17,36,38,0.2) 58%, rgba(17,36,38,0.8) 100%);
-    box-shadow: inset 0 0 18px rgba(255,255,255,0.04);
+    overflow: hidden;
+    border: 2px solid rgba(255,255,255,0.18);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.28);
+    background: rgba(255,255,255,0.04);
   }
 
-  .countdown-ring svg {
+  .signal-photo img {
     width: 100%;
     height: 100%;
-    transform: rotate(-90deg);
-  }
-
-  .countdown-ring .bg {
-    fill: none;
-    stroke: rgba(255,255,255,0.08);
-    stroke-width: 8;
-  }
-
-  .countdown-ring .progress {
-    fill: none;
-    stroke: url(#ringGradient);
-    stroke-width: 8;
-    stroke-linecap: round;
-    stroke-dasharray: 314;
-    stroke-dashoffset: 314;
-    transition: stroke-dashoffset 0.9s ease;
-  }
-
-  .countdown-ring .inner {
-    position: absolute;
-    inset: 18px;
-    display: grid;
-    place-items: center;
-    border-radius: 50%;
-    background: rgba(9, 18, 19, 0.82);
-    border: 1px solid rgba(255,255,255,0.08);
-    text-align: center;
-  }
-
-  .countdown-ring .ring-value {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 1.55rem;
-    font-weight: 700;
-    color: var(--cream);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .countdown-ring .ring-label {
+    object-fit: cover;
     display: block;
-    margin-top: 0.2rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.56rem;
-    letter-spacing: 0.12em;
-    color: var(--sage);
-    text-transform: uppercase;
   }
 
-  .timer {
+  /* --- Gallery: the main event --- */
+  .gallery-section {
+    position: relative;
+    z-index: 2;
+  }
+
+  .gallery-head {
     display: flex;
-    gap: clamp(0.8rem, 2vw, 1.5rem);
-    align-items: flex-end;
-    justify-content: center;
-    flex-wrap: nowrap;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 1.3rem;
   }
 
-  .unit {
-    min-width: 4.8rem;
-    text-align: center;
-    padding: 0.8rem 0.55rem 0.4rem;
-    border-radius: 18px;
-    background: rgba(255,255,255,0.02);
-    border: 1px solid rgba(255,255,255,0.05);
-  }
-
-  .unit .value {
-    display: block;
-    font-family: 'JetBrains Mono', monospace;
+  .gallery-title {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
     font-weight: 600;
-    font-size: clamp(1.9rem, 4vw, 3.2rem);
     color: var(--cream);
-    line-height: 1;
-    letter-spacing: -0.04em;
-    font-variant-numeric: tabular-nums;
   }
 
-  .unit .label {
+  .gallery-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    color: var(--sage);
+  }
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.9rem;
+  }
+
+  .gallery-grid .gallery-tile:first-child,
+  .gallery-grid .gallery-tile:nth-child(5) {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+
+  .gallery-tile {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    border-radius: 18px;
+    overflow: hidden;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .gallery-tile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     display: block;
-    margin-top: 0.65rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.62rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--sage);
+    cursor: pointer;
+    transition: transform 0.35s ease;
   }
 
-  .divider {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: clamp(1.8rem, 3vw, 2.7rem);
-    color: rgba(247,241,232,0.25);
-    padding-bottom: 1.2rem;
+  .gallery-tile img:hover {
+    transform: scale(1.04);
   }
 
-  .timer-foot {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    color: var(--sage);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.66rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
-
-  .timer-foot::before {
-    content: "";
-    width: 8px;
-    height: 8px;
+  .gallery-remove {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 26px;
+    height: 26px;
     border-radius: 50%;
-    background: var(--gold);
-    box-shadow: 0 0 18px rgba(240,199,106,0.9);
-    animation: pulse 2.8s ease-in-out infinite;
+    border: none;
+    background: rgba(9, 18, 19, 0.72);
+    color: var(--cream);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s ease, background 0.2s ease;
   }
 
-  .visual-column {
+  .gallery-tile:hover .gallery-remove {
+    opacity: 1;
+  }
+
+  .gallery-remove:hover {
+    background: rgba(204, 127, 96, 0.85);
+  }
+
+  .gallery-add {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    transform: translateY(-8px);
-  }
-
-  .photo-card {
-    position: relative;
-    border-radius: 28px;
-    overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.12);
-    background-size: cover;
-    background-position: center;
-    box-shadow: 0 24px 56px rgba(0,0,0,0.26);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    animation: floatPhoto 6s ease-in-out infinite;
-  }
-
-  .photo-card:hover {
-    transform: translateY(-6px) scale(1.01);
-    box-shadow: 0 30px 64px rgba(0,0,0,0.32);
-  }
-
-  .photo-main { animation-delay: 0.2s; }
-  .small-one { animation-delay: 0.8s; }
-  .small-two { animation-delay: 1.4s; }
-
-  .photo-main {
-    height: 21rem;
-    background-image:
-      linear-gradient(180deg, rgba(8, 17, 19, 0.12), rgba(8,17,19,0.62)),
-      url('https://upload.wikimedia.org/wikipedia/commons/9/9c/Utrecht_Canal_Pride_2018%2C_03.jpg');
-  }
-
-  .mini-cards {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-  }
-
-  .small {
-    height: 10.5rem;
-  }
-
-  .small-one {
-    background-image:
-      linear-gradient(180deg, rgba(8,17,19,0.12), rgba(8,17,19,0.55)),
-      url('https://upload.wikimedia.org/wikipedia/commons/6/6c/Domtoren_Utrecht_-_1.jpg');
-  }
-
-  .small-two {
-    background-image:
-      linear-gradient(180deg, rgba(8,17,19,0.12), rgba(8,17,19,0.55)),
-      url('OIP-3170318232.jpg');
-  }
-
-  .card-label {
-    position: absolute;
-    left: 1rem;
-    bottom: 1rem;
-    display: inline-flex;
     align-items: center;
-    gap: 0.55rem;
-    padding: 0.55rem 0.8rem;
-    border-radius: 999px;
-    border: 1px solid rgba(255,255,255,0.12);
-    background: rgba(12, 16, 18, 0.5);
-    color: var(--cream);
+    justify-content: center;
+    gap: 0.5rem;
+    border: 1px dashed rgba(255,255,255,0.22);
+    border-radius: 18px;
+    background: transparent;
+    color: var(--sage);
+    cursor: pointer;
+    aspect-ratio: 1 / 1;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.64rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+  }
+
+  .gallery-add:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(240,199,106,0.05);
+  }
+
+  .gallery-add .plus {
+    font-family: 'Fraunces', serif;
+    font-size: 2.2rem;
+    line-height: 1;
+    font-weight: 400;
+  }
+
+  .gallery-status {
+    margin-top: 1rem;
+    text-align: center;
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.62rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--sage);
+    min-height: 0.9rem;
   }
 
-  .card-label::before {
-    content: "";
-    width: 8px;
-    height: 8px;
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(6, 12, 13, 0.86);
+    backdrop-filter: blur(6px);
+    padding: 2rem;
+  }
+
+  .lightbox.open {
+    display: flex;
+  }
+
+  .lightbox img {
+    max-width: min(90vw, 900px);
+    max-height: 85vh;
+    border-radius: 12px;
+    box-shadow: 0 30px 70px rgba(0,0,0,0.5);
+  }
+
+  .lightbox-close {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    background: #8dd4d0;
-    box-shadow: 0 0 14px rgba(141,212,208,0.8);
+    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(9,18,19,0.6);
+    color: var(--cream);
+    font-size: 1.1rem;
+    cursor: pointer;
   }
 
   .water-band {
@@ -492,6 +420,54 @@
     background: linear-gradient(180deg, transparent 0%, rgba(240,199,106,0.16) 100%);
   }
 
+  /* --- Timer: pushed to the background, a quiet floating badge --- */
+  .timer-badge {
+    position: fixed;
+    left: 1.2rem;
+    bottom: 1.2rem;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.55rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(10, 20, 22, 0.55);
+    backdrop-filter: blur(8px);
+    opacity: 0.7;
+    transition: opacity 0.25s ease;
+  }
+
+  .timer-badge:hover {
+    opacity: 1;
+  }
+
+  .timer-badge .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 10px rgba(240,199,106,0.8);
+    animation: pulse 2.8s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+
+  .timer-badge .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--sage);
+  }
+
+  .timer-badge .value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--cream);
+    font-variant-numeric: tabular-nums;
+  }
+
   @keyframes pulse {
     0%, 100% { opacity: 0.4; transform: scale(0.9); }
     50% { opacity: 1; transform: scale(1.1); }
@@ -502,38 +478,22 @@
     50% { transform: translateY(-3px); }
   }
 
-  @keyframes floatPhoto {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-6px); }
-  }
-
-  @media (max-width: 900px) {
-    .hero { grid-template-columns: 1fr; }
-    .visual-column { max-width: 32rem; width: 100%; margin: 0 auto; }
-  }
-
-  @media (max-width: 560px) {
-    .topbar {
-      flex-direction: column;
-      gap: 0.8rem;
-      align-items: flex-start;
+  @media (max-width: 700px) {
+    .gallery-grid {
+      grid-template-columns: repeat(2, 1fr);
     }
 
-    .timer {
-      gap: 0.5rem;
-      justify-content: space-between;
+    .gallery-grid .gallery-tile:first-child,
+    .gallery-grid .gallery-tile:nth-child(5) {
+      grid-column: span 2;
+      grid-row: span 1;
     }
 
-    .unit {
-      min-width: 3.7rem;
+    .timer-badge {
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 0.9rem;
     }
-
-    .divider {
-      display: none;
-    }
-
-    .photo-main { height: 18rem; }
-    .small { height: 8.8rem; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -546,84 +506,58 @@
   <div class="page-shell">
     <header class="topbar">
       <div class="brand">Utrecht · Paula</div>
-      <div class="status">Countdown</div>
     </header>
 
-    <main class="hero">
-      <section class="copy-block">
-        <div class="eyebrow">Een teller tot Utrecht</div>
-        <h1>Welkom <em>in</em> Utrecht, Paula!</h1>
-        <p class="subtitle" id="subtitle">Nog even geduld — dan sta je middenin de grachten.</p>
+    <section class="intro">
+      <div class="eyebrow">Onze grachtenstad</div>
+      <h1>Welkom <em>in</em> Utrecht, Paula!</h1>
+      <p class="subtitle" id="subtitle">Nog even geduld — dan sta je middenin de grachten.</p>
 
-        <div class="city-tags" aria-label="Utrecht highlights">
-          <span class="chip">Oudegracht</span>
-          <span class="chip">Domtoren</span>
-          <span class="chip">Janskerkhof</span>
+      <div class="city-tags" aria-label="Utrecht highlights">
+        <span class="chip">Oudegracht</span>
+        <span class="chip">Domtoren</span>
+        <span class="chip">Janskerkhof</span>
+      </div>
+
+      <div class="signal-stack" aria-label="Signal artwork collection">
+        <div class="signal-photo" aria-label="Signal artwork one">
+          <img src="media/valentin.jpg" alt="Valiiii" />
         </div>
-
-        <div class="timer-panel">
-          <div class="timer-wrap">
-            <div class="countdown-ring" aria-label="Aankomst countdown">
-              <svg viewBox="0 0 120 120" role="img" aria-hidden="true">
-                <defs>
-                  <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#f0c76a" />
-                    <stop offset="50%" stop-color="#cc7f60" />
-                    <stop offset="100%" stop-color="#8dd4d0" />
-                  </linearGradient>
-                </defs>
-                <circle class="bg" cx="60" cy="60" r="50"></circle>
-                <circle class="progress" cx="60" cy="60" r="50"></circle>
-              </svg>
-              <div class="inner">
-                <div>
-                  <div class="ring-value" id="ringValue">00</div>
-                  <span class="ring-label">dagen</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="timer" aria-live="polite">
-              <div class="unit"><span class="value" id="days">00</span><span class="label">dagen</span></div>
-              <span class="divider">:</span>
-              <div class="unit"><span class="value" id="hours">00</span><span class="label">uren</span></div>
-              <span class="divider">:</span>
-              <div class="unit"><span class="value" id="minutes">00</span><span class="label">minuten</span></div>
-              <span class="divider">:</span>
-              <div class="unit"><span class="value" id="seconds">00</span><span class="label">seconden</span></div>
-            </div>
-          </div>
-          <div class="timer-foot">Naar de Domtoren</div>
+        <div class="signal-photo" aria-label="Signal artwork two">
+          <img src="media/daphne.jpg" alt="Daphneee" />
         </div>
-      </section>
+      </div>
+    </section>
 
-      <aside class="visual-column" aria-label="Utrecht inspiration">
-        <div class="signal-stack" aria-label="Signal artwork collection">
-          <div class="signal-photo" aria-label="Signal artwork one">
-            <img src="signal-2026-08-29-14-23-35-847.jpg" alt="Signal artwork one" />
-          </div>
-          <div class="signal-photo" aria-label="Signal artwork two">
-            <img src="signal-2026-08-29-14-27-08-301.jpg" alt="Signal artwork two" />
-          </div>
-        </div>
-
-        <div class="photo-card photo-main">
-          <span class="card-label">Oudegracht</span>
-        </div>
-
-        <div class="mini-cards">
-          <div class="photo-card small small-one">
-            <span class="card-label">Domtoren</span>
-          </div>
-          <div class="photo-card small small-two">
-            <span class="card-label">Springhaver</span>
-          </div>
-        </div>
-      </aside>
-    </main>
+    <section class="gallery-section" aria-label="Foto's van het bezoek">
+      <div class="gallery-head">
+        <span class="gallery-title">Foto's van het bezoek</span>
+        <span class="gallery-count" id="galleryCount">0 foto's</span>
+      </div>
+      <div class="gallery-grid" id="galleryGrid">
+        <button class="gallery-add" id="galleryAddBtn" type="button">
+          <span class="plus">+</span>
+          <span>Foto toevoegen</span>
+        </button>
+      </div>
+      <input type="file" id="galleryInput" accept="image/*" multiple hidden />
+      <div class="gallery-status" id="galleryStatus"></div>
+    </section>
   </div>
 
   <div class="water-band" aria-hidden="true"></div>
+
+  <!-- Timer: intentionally understated, tucked away in the corner -->
+  <div class="timer-badge" aria-label="Aankomst countdown">
+    <span class="dot"></span>
+    <span class="label">Domtoren over</span>
+    <span class="value" id="timerValue">—</span>
+  </div>
+
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lightboxClose" type="button">✕</button>
+    <img id="lightboxImg" src="" alt="Vergrote foto" />
+  </div>
 
   <script>
     const TARGET_DATE = "2026-08-29T21:36:00";
@@ -631,8 +565,7 @@
 
     const subtitle = document.getElementById('subtitle');
     const target = new Date(TARGET_DATE).getTime();
-    const ring = document.querySelector('.progress');
-    const ringValue = document.getElementById('ringValue');
+    const timerValue = document.getElementById('timerValue');
 
     subtitle.textContent = SUBTITLE_TEXT;
 
@@ -640,30 +573,16 @@
       return String(value).padStart(2, '0');
     }
 
-    function updateRing(daysLeft, totalDays) {
-      const radius = 50;
-      const circumference = 2 * Math.PI * radius;
-      const progressRatio = Math.max(0, Math.min(1, daysLeft / totalDays));
-      const offset = circumference * (1 - progressRatio);
-
-      ring.style.strokeDasharray = String(circumference);
-      ring.style.strokeDashoffset = String(offset);
-      ringValue.textContent = pad(daysLeft);
-    }
+    let timerInterval = null;
 
     function tick() {
       const now = Date.now();
       const diff = target - now;
 
       if (diff <= 0) {
-        document.getElementById('days').textContent = '00';
-        document.getElementById('hours').textContent = '00';
-        document.getElementById('minutes').textContent = '00';
-        document.getElementById('seconds').textContent = '00';
         subtitle.textContent = 'Welkom thuis in Utrecht. 🎉';
-        ringValue.textContent = '00';
-        ring.style.strokeDashoffset = '314';
-        clearInterval(timerInterval);
+        timerValue.textContent = 'aangekomen';
+        if (timerInterval) clearInterval(timerInterval);
         return;
       }
 
@@ -672,28 +591,186 @@
       const minutes = Math.floor((diff % 3600000) / 60000);
       const seconds = Math.floor((diff % 60000) / 1000);
 
-      document.getElementById('days').textContent = pad(days);
-      document.getElementById('hours').textContent = pad(hours);
-      document.getElementById('minutes').textContent = pad(minutes);
-      document.getElementById('seconds').textContent = pad(seconds);
-
-      const totalDays = 30;
-      updateRing(days, totalDays);
+      timerValue.textContent = `${days}d ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
     }
 
     tick();
-    const timerInterval = setInterval(tick, 1000);
+    timerInterval = setInterval(tick, 1000);
 
-    document.addEventListener('pointermove', (event) => {
-      const x = (event.clientX / window.innerWidth - 0.5) * 12;
-      const y = (event.clientY / window.innerHeight - 0.5) * 10;
+    // --- Gallery: persisted via window.storage (personal, this browser/account only) ---
+    const GALLERY_INDEX_KEY = 'gallery-index';
+    const galleryGrid = document.getElementById('galleryGrid');
+    const galleryAddBtn = document.getElementById('galleryAddBtn');
+    const galleryInput = document.getElementById('galleryInput');
+    const galleryCount = document.getElementById('galleryCount');
+    const galleryStatus = document.getElementById('galleryStatus');
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const lightboxClose = document.getElementById('lightboxClose');
 
-      document.querySelector('.page-shell').style.transform = `perspective(1200px) rotateX(${(-y).toFixed(2)}deg) rotateY(${x.toFixed(2)}deg)`;
+    const storageAvailable = !!(window.storage && typeof window.storage.get === 'function');
+
+    function setStatus(msg) {
+      galleryStatus.textContent = msg || '';
+    }
+
+    function updateCount(n) {
+      galleryCount.textContent = n === 1 ? '1 foto' : `${n} foto's`;
+    }
+
+    function openLightbox(src) {
+      lightboxImg.src = src;
+      lightbox.classList.add('open');
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove('open');
+      lightboxImg.src = '';
+    }
+
+    lightboxClose.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) closeLightbox();
     });
 
-    document.addEventListener('pointerleave', () => {
-      document.querySelector('.page-shell').style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg)';
+    function makeTile(id, dataUrl) {
+      const tile = document.createElement('div');
+      tile.className = 'gallery-tile';
+      tile.dataset.id = id;
+
+      const img = document.createElement('img');
+      img.src = dataUrl;
+      img.alt = 'Foto van het bezoek';
+      img.addEventListener('click', () => openLightbox(dataUrl));
+
+      const removeBtn = document.createElement('button');
+      removeBtn.className = 'gallery-remove';
+      removeBtn.type = 'button';
+      removeBtn.textContent = '✕';
+      removeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        removePhoto(id, tile);
+      });
+
+      tile.appendChild(img);
+      tile.appendChild(removeBtn);
+      return tile;
+    }
+
+    async function getIndex() {
+      try {
+        const result = await window.storage.get(GALLERY_INDEX_KEY, false);
+        if (result && result.value) return JSON.parse(result.value);
+        return [];
+      } catch (err) {
+        return [];
+      }
+    }
+
+    async function saveIndex(ids) {
+      try {
+        await window.storage.set(GALLERY_INDEX_KEY, JSON.stringify(ids), false);
+      } catch (err) {
+        console.error('Kon fotolijst niet opslaan', err);
+      }
+    }
+
+    async function loadGallery() {
+      if (!storageAvailable) {
+        setStatus('Foto-opslag is hier niet beschikbaar.');
+        updateCount(0);
+        return;
+      }
+      setStatus('Foto\u2019s laden…');
+      const ids = await getIndex();
+      updateCount(ids.length);
+      for (const id of ids) {
+        try {
+          const result = await window.storage.get(`gallery-photo:${id}`, false);
+          if (result && result.value) {
+            galleryGrid.insertBefore(makeTile(id, result.value), galleryAddBtn);
+          }
+        } catch (err) {
+          // skip missing/broken entries
+        }
+      }
+      setStatus('');
+    }
+
+    function resizeImage(file, maxDim = 1600, quality = 0.85) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onerror = () => reject(new Error('Bestand kon niet worden gelezen'));
+        reader.onload = () => {
+          const img = new Image();
+          img.onerror = () => reject(new Error('Afbeelding kon niet worden geladen'));
+          img.onload = () => {
+            let { width, height } = img;
+            if (width > maxDim || height > maxDim) {
+              const scale = maxDim / Math.max(width, height);
+              width = Math.round(width * scale);
+              height = Math.round(height * scale);
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/jpeg', quality));
+          };
+          img.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function addPhotos(files) {
+      if (!storageAvailable) {
+        setStatus('Foto-opslag is hier niet beschikbaar.');
+        return;
+      }
+      const ids = await getIndex();
+      for (const file of files) {
+        if (!file.type.startsWith('image/')) continue;
+        setStatus(`Bezig met opslaan: ${file.name}…`);
+        try {
+          const dataUrl = await resizeImage(file);
+          const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+          const result = await window.storage.set(`gallery-photo:${id}`, dataUrl, false);
+          if (!result) throw new Error('Opslaan mislukt');
+          ids.push(id);
+          galleryGrid.insertBefore(makeTile(id, dataUrl), galleryAddBtn);
+          updateCount(ids.length);
+        } catch (err) {
+          console.error(err);
+          setStatus(`Kon "${file.name}" niet opslaan.`);
+        }
+      }
+      await saveIndex(ids);
+      setStatus('');
+    }
+
+    async function removePhoto(id, tileEl) {
+      try {
+        await window.storage.delete(`gallery-photo:${id}`, false);
+        const ids = (await getIndex()).filter((existing) => existing !== id);
+        await saveIndex(ids);
+        tileEl.remove();
+        updateCount(ids.length);
+      } catch (err) {
+        console.error('Kon foto niet verwijderen', err);
+        setStatus('Kon foto niet verwijderen.');
+      }
+    }
+
+    galleryAddBtn.addEventListener('click', () => galleryInput.click());
+    galleryInput.addEventListener('change', (e) => {
+      const files = Array.from(e.target.files || []);
+      if (files.length) addPhotos(files);
+      galleryInput.value = '';
     });
+
+    loadGallery();
   </script>
 </body>
 </html>
