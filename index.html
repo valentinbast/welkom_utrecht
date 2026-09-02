@@ -359,7 +359,7 @@
 
   .journal-form textarea {
     width:100%;
-    min-height:80px;
+    min-height:90px;
     padding:0.75rem;
     border:1px solid var(--line);
     border-radius:var(--radius);
@@ -379,36 +379,7 @@
   .journal-controls {
     display:flex;
     align-items:center;
-    justify-content:space-between;
-    flex-wrap:wrap;
-    gap:0.75rem;
-  }
-
-  .audio-recorder {
-    display:flex;
-    align-items:center;
-    gap:0.5rem;
-  }
-
-  .btn-record {
-    background:transparent;
-    border:1px solid var(--brick);
-    color:var(--brick);
-    padding:0.5rem 0.9rem;
-    display:flex;
-    align-items:center;
-    gap:0.4rem;
-  }
-  .btn-record.recording {
-    background:var(--brick);
-    color:var(--parchment);
-    animation:pulse 1.2s infinite;
-  }
-
-  @keyframes pulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.5; }
-    100% { opacity: 1; }
+    justify-content:flex-end;
   }
 
   .journal-list {
@@ -447,13 +418,6 @@
   .journal-text {
     font-size:0.98rem;
     white-space:pre-wrap;
-    margin-bottom:0.5rem;
-  }
-
-  .journal-audio {
-    margin-top:0.6rem;
-    width:100%;
-    height:36px;
   }
 
   /* ---------- Lightbox ---------- */
@@ -546,19 +510,12 @@
 
 <section class="journal-section">
   <div class="journal-head">
-    <h2>Herinneringen & Spraakmemo's</h2>
+    <h2>Herinneringen</h2>
   </div>
 
   <div class="journal-form">
     <textarea id="noteInput" placeholder="Schrijf een mooie herinnering of gedachte..."></textarea>
     <div class="journal-controls">
-      <div class="audio-recorder">
-        <button id="recordBtn" class="btn-record" type="button">
-          <span id="recordIcon">🎙️</span>
-          <span id="recordLabel">Inspreken</span>
-        </button>
-        <span id="recordTimer" style="font-size:0.85rem; color:var(--brick);"></span>
-      </div>
       <button id="saveNoteBtn" class="btn-primary" type="button">Opslaan</button>
     </div>
   </div>
@@ -580,7 +537,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
-  import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAhLDFnxEsKsG9Sn2IoXP5UfhtXGy-Lv3o",
@@ -617,19 +574,10 @@
   // Journal Elements
   const noteInput = document.getElementById('noteInput');
   const saveNoteBtn = document.getElementById('saveNoteBtn');
-  const recordBtn = document.getElementById('recordBtn');
-  const recordLabel = document.getElementById('recordLabel');
-  const recordIcon = document.getElementById('recordIcon');
-  const recordTimer = document.getElementById('recordTimer');
   const journalList = document.getElementById('journalList');
 
   let currentPhotos = [];
   let carouselIndex = 0;
-
-  let mediaRecorder = null;
-  let audioChunks = [];
-  let recordedAudioBlob = null;
-  let isRecording = false;
 
   function setStatus(msg) { galleryStatus.textContent = msg || ''; }
 
@@ -818,7 +766,7 @@
 
         await addDoc(collection(db, "photos"), {
           url: downloadURL,
-          createdAt: new Date()
+          createdAt: serverTimestamp()
         });
       } catch (err) {
         console.error("Upload error:", err);
@@ -868,45 +816,12 @@
     }
   });
 
-  // Voice Recorder
-  recordBtn.addEventListener('click', async () => {
-    if (!isRecording) {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaRecorder = new MediaRecorder(stream);
-        audioChunks = [];
-
-        mediaRecorder.ondataavailable = (e) => { audioChunks.push(e.data); };
-        mediaRecorder.onstop = () => {
-          recordedAudioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-        };
-
-        mediaRecorder.start();
-        isRecording = true;
-        recordBtn.classList.add('recording');
-        recordLabel.textContent = 'Stop opname';
-        recordIcon.textContent = '⏹️';
-        recordTimer.textContent = 'Opnemen...';
-      } catch (err) {
-        alert('Microfoon toegang is vereist om audio op te nemen.');
-      }
-    } else {
-      mediaRecorder.stop();
-      mediaRecorder.stream.getTracks().forEach(track => track.stop());
-      isRecording = false;
-      recordBtn.classList.remove('recording');
-      recordLabel.textContent = 'Opnieuw inspreken';
-      recordIcon.textContent = '🎙️';
-      recordTimer.textContent = 'Opname gereed!';
-    }
-  });
-
-  // Save Note & Audio
+  // Save Text Note
   saveNoteBtn.addEventListener('click', async () => {
     const text = noteInput.value.trim();
 
-    if (!text && !recordedAudioBlob) {
-      alert('Voeg een bericht of een spraakmemo toe.');
+    if (!text) {
+      alert('Voeg een bericht toe.');
       return;
     }
 
@@ -914,28 +829,15 @@
     saveNoteBtn.textContent = 'Opslaan…';
 
     try {
-      let audioUrl = null;
-
-      if (recordedAudioBlob) {
-        const fileName = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.webm`;
-        const audioRef = ref(storage, `journal_audio/${fileName}`);
-        await uploadBytes(audioRef, recordedAudioBlob);
-        audioUrl = await getDownloadURL(audioRef);
-      }
-
       await addDoc(collection(db, "journal"), {
         text: text,
-        audioUrl: audioUrl,
-        createdAt: new Date()
+        createdAt: serverTimestamp()
       });
 
       noteInput.value = '';
-      recordedAudioBlob = null;
-      recordLabel.textContent = 'Inspreken';
-      recordTimer.textContent = '';
     } catch (err) {
       console.error("Error saving note:", err);
-      alert('Kon de herinnering niet opslaan.');
+      alert(`Kon de herinnering niet opslaan.\nFoutmelding: ${err.message || err}`);
     } finally {
       saveNoteBtn.disabled = false;
       saveNoteBtn.textContent = 'Opslaan';
@@ -981,14 +883,6 @@
         textEl.className = 'journal-text';
         textEl.textContent = data.text;
         card.appendChild(textEl);
-      }
-
-      if (data.audioUrl) {
-        const audioEl = document.createElement('audio');
-        audioEl.className = 'journal-audio';
-        audioEl.controls = true;
-        audioEl.src = data.audioUrl;
-        card.appendChild(audioEl);
       }
 
       journalList.appendChild(card);
