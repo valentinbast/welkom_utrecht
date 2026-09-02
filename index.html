@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Onderweg naar Utrecht</title>
-<!-- Leaflet CSS for Interactive Map -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Source+Sans+3:wght@400;500;600&display=swap');
 
@@ -194,56 +192,6 @@
     text-align:center;
     color:#8b8577;
     font-style:italic;
-  }
-
-  /* ---------- Map Section ---------- */
-
-  .map-section {
-    max-width:960px;
-    margin:2rem auto 1rem;
-    padding:0 1.5rem;
-  }
-
-  .map-section h2 {
-    font-size:1.5rem;
-    margin-bottom:1rem;
-    color:var(--canal);
-  }
-
-  #map {
-    width:100%;
-    height:360px;
-    border-radius:var(--radius);
-    border:1px solid var(--line);
-    box-shadow:0 4px 16px rgba(28,43,41,0.06);
-    z-index:1;
-  }
-
-  .map-popup-content {
-    font-family:'Source Sans 3', sans-serif;
-    color:var(--ink);
-  }
-  .map-popup-content h4 {
-    margin:0 0 0.3rem;
-    font-family:'Fraunces', serif;
-    color:var(--canal);
-  }
-  .map-popup-content p {
-    margin:0 0 0.6rem;
-    font-size:0.85rem;
-    color:#5c6663;
-  }
-  .map-popup-thumbs {
-    display:flex;
-    gap:0.4rem;
-    overflow-x:auto;
-  }
-  .map-popup-thumb {
-    width:50px;
-    height:50px;
-    object-fit:cover;
-    border-radius:4px;
-    cursor:pointer;
   }
 
   /* ---------- Main & Gallery ---------- */
@@ -574,12 +522,6 @@
   </div>
 </section>
 
-<!-- NEW: Interactive Map Section -->
-<section class="map-section">
-  <h2>Plekken in Utrecht</h2>
-  <div id="map"></div>
-</section>
-
 <main>
   <div class="gallery-head">
     <h2>Samen verzameld</h2>
@@ -634,8 +576,6 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<!-- Leaflet JS -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -710,54 +650,6 @@
 
   lightboxClose.addEventListener('click', closeLightbox);
   lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
-
-  window.openLightboxFromMap = openLightbox;
-
-  // --- Interactive Leaflet Map ---
-  const utrechtCoords = [52.0907, 5.1214];
-  const map = L.map('map').setView(utrechtCoords, 14);
-
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '© OpenStreetMap contributors'
-  }).addTo(map);
-
-  const spots = [
-    { name: "Domtoren", coords: [52.0906, 5.1213], desc: "De iconische toren van Utrecht." },
-    { name: "Oudegracht", coords: [52.0892, 5.1205], desc: "Wandelen langs de werfskelders." },
-    { name: "Café de Zaak", coords: [52.0931, 5.1189], desc: "Gezellig een drankje doen." },
-    { name: "Wilhelminapark", coords: [52.0863, 5.1381], desc: "Ontspannen in het park." }
-  ];
-
-  function updateMapPopups() {
-    spots.forEach(spot => {
-      let popupHtml = `
-        <div class="map-popup-content">
-          <h4>${spot.name}</h4>
-          <p>${spot.desc}</p>
-      `;
-
-      if (currentPhotos.length > 0) {
-        popupHtml += `<div class="map-popup-thumbs">`;
-        currentPhotos.slice(0, 3).forEach(p => {
-          popupHtml += `<img src="${p.url}" class="map-popup-thumb" onclick="window.openLightboxFromMap('${p.url}')">`;
-        });
-        popupHtml += `</div>`;
-      } else {
-        popupHtml += `<p style="font-size:0.75rem; color:#8b8577; margin:0;">Nog geen foto's hier gekoppeld.</p>`;
-      }
-
-      popupHtml += `</div>`;
-
-      if (spot.marker) {
-        spot.marker.setPopupContent(popupHtml);
-      } else {
-        spot.marker = L.marker(spot.coords).addTo(map).bindPopup(popupHtml);
-      }
-    });
-  }
-
-  updateMapPopups();
 
   // Carousel
   function renderCarousel() {
@@ -877,7 +769,6 @@
 
     updateCount(currentPhotos.length);
     renderCarousel();
-    updateMapPopups();
     setStatus('');
   }, (err) => {
     console.error("Firebase read error:", err);
