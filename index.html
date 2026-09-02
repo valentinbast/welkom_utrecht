@@ -28,7 +28,7 @@
     line-height:1.5;
   }
 
-  h1, h2{
+  h1, h2, h3{
     font-family:'Fraunces', serif;
     font-weight:600;
     margin:0;
@@ -97,12 +97,110 @@
     color:var(--parchment);
   }
 
+  /* ---------- Highlights / Skimmer Section ---------- */
+
+  .carousel-section {
+    max-width:960px;
+    margin:0 auto;
+    padding:2.5rem 1.5rem 1rem;
+  }
+
+  .carousel-section h2 {
+    font-size:1.5rem;
+    margin-bottom:1rem;
+    color:var(--canal);
+  }
+
+  .carousel-container {
+    position:relative;
+    background:#e4ded0;
+    border-radius:var(--radius);
+    overflow:hidden;
+    box-shadow:0 8px 24px rgba(28,43,41,0.08);
+  }
+
+  .carousel-view {
+    position:relative;
+    width:100%;
+    height:380px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:var(--canal);
+  }
+
+  .carousel-img {
+    max-width:100%;
+    max-height:100%;
+    object-fit:contain;
+    cursor:pointer;
+  }
+
+  .carousel-btn {
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    background:rgba(28,43,41,0.65);
+    color:#fff;
+    border:none;
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    font-size:1.2rem;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    transition:background 0.2s ease, opacity 0.2s ease;
+    z-index:10;
+  }
+  .carousel-btn:hover { background:var(--brick); }
+  .carousel-btn.prev { left:12px; }
+  .carousel-btn.next { right:12px; }
+
+  .carousel-thumbs {
+    display:flex;
+    gap:0.5rem;
+    padding:0.75rem;
+    background:var(--parchment);
+    border:1px solid var(--line);
+    border-top:none;
+    border-bottom-left-radius:var(--radius);
+    border-bottom-right-radius:var(--radius);
+    overflow-x:auto;
+    scrollbar-width:thin;
+  }
+
+  .thumb-item {
+    width:60px;
+    height:60px;
+    border-radius:4px;
+    object-fit:cover;
+    cursor:pointer;
+    opacity:0.6;
+    transition:opacity 0.15s ease, border-color 0.15s ease;
+    border:2px solid transparent;
+    flex-shrink:0;
+  }
+  .thumb-item:hover { opacity:0.85; }
+  .thumb-item.active {
+    opacity:1;
+    border-color:var(--brick);
+  }
+
+  .carousel-empty {
+    padding:3rem;
+    text-align:center;
+    color:#8b8577;
+    font-style:italic;
+  }
+
   /* ---------- Gallery section ---------- */
 
   main{
     max-width:960px;
     margin:0 auto;
-    padding:3.5rem 1.5rem 5rem;
+    padding:2rem 1.5rem 5rem;
   }
 
   .gallery-head{
@@ -288,6 +386,20 @@
   </div>
 </header>
 
+<!-- NEW: Photo Highlights / Skimmer Section -->
+<section class="carousel-section">
+  <h2>Hoogtepunten</h2>
+  <div class="carousel-container">
+    <div id="carouselView" class="carousel-view">
+      <div id="carouselEmpty" class="carousel-empty">Nog geen foto's om te bekijken.</div>
+      <img id="carouselImg" class="carousel-img" src="" alt="" style="display:none;">
+      <button id="carouselPrev" class="carousel-btn prev" type="button" style="display:none;">❮</button>
+      <button id="carouselNext" class="carousel-btn next" type="button" style="display:none;">❯</button>
+    </div>
+    <div id="carouselThumbs" class="carousel-thumbs" style="display:none;"></div>
+  </div>
+</section>
+
 <main>
   <div class="gallery-head">
     <h2>Samen verzameld</h2>
@@ -339,7 +451,7 @@
   const storage = getStorage(app);
   const db = getFirestore(app);
 
-  // --- Public Gallery (Shared across all users/devices) ---
+  // Gallery Elements
   const galleryGrid = document.getElementById('galleryGrid');
   const galleryAddBtn = document.getElementById('galleryAddBtn');
   const galleryAddBtnHeader = document.getElementById('galleryAddBtnHeader');
@@ -351,7 +463,15 @@
   const lightboxImg = document.getElementById('lightboxImg');
   const lightboxClose = document.getElementById('lightboxClose');
 
+  // Carousel / Skimmer Elements
+  const carouselImg = document.getElementById('carouselImg');
+  const carouselEmpty = document.getElementById('carouselEmpty');
+  const carouselPrev = document.getElementById('carouselPrev');
+  const carouselNext = document.getElementById('carouselNext');
+  const carouselThumbs = document.getElementById('carouselThumbs');
+
   let currentPhotos = [];
+  let carouselIndex = 0;
 
   function setStatus(msg) { galleryStatus.textContent = msg || ''; }
 
@@ -372,6 +492,64 @@
 
   lightboxClose.addEventListener('click', closeLightbox);
   lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+
+  // --- Carousel / Skimmer Controller ---
+  function renderCarousel() {
+    if (currentPhotos.length === 0) {
+      carouselEmpty.style.display = 'block';
+      carouselImg.style.display = 'none';
+      carouselPrev.style.display = 'none';
+      carouselNext.style.display = 'none';
+      carouselThumbs.style.display = 'none';
+      carouselThumbs.innerHTML = '';
+      return;
+    }
+
+    if (carouselIndex >= currentPhotos.length) {
+      carouselIndex = Math.max(0, currentPhotos.length - 1);
+    }
+
+    carouselEmpty.style.display = 'none';
+    carouselImg.style.display = 'block';
+    carouselImg.src = currentPhotos[carouselIndex].url;
+
+    carouselPrev.style.display = currentPhotos.length > 1 ? 'flex' : 'none';
+    carouselNext.style.display = currentPhotos.length > 1 ? 'flex' : 'none';
+    carouselThumbs.style.display = currentPhotos.length > 1 ? 'flex' : 'none';
+
+    // Render Thumbnail strip
+    carouselThumbs.innerHTML = '';
+    currentPhotos.forEach((item, idx) => {
+      const thumb = document.createElement('img');
+      thumb.src = item.url;
+      thumb.className = `thumb-item ${idx === carouselIndex ? 'active' : ''}`;
+      thumb.addEventListener('click', () => {
+        carouselIndex = idx;
+        renderCarousel();
+      });
+      carouselThumbs.appendChild(thumb);
+    });
+
+    // Scroll active thumb into view
+    const activeThumb = carouselThumbs.children[carouselIndex];
+    if (activeThumb) {
+      activeThumb.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }
+  }
+
+  carouselPrev.addEventListener('click', () => {
+    carouselIndex = (carouselIndex - 1 + currentPhotos.length) % currentPhotos.length;
+    renderCarousel();
+  });
+
+  carouselNext.addEventListener('click', () => {
+    carouselIndex = (carouselIndex + 1) % currentPhotos.length;
+    renderCarousel();
+  });
+
+  carouselImg.addEventListener('click', () => {
+    if (currentPhotos[carouselIndex]) openLightbox(currentPhotos[carouselIndex].url);
+  });
 
   function downloadDataUrl(url, filename) {
     const link = document.createElement('a');
@@ -434,6 +612,7 @@
     });
 
     updateCount(currentPhotos.length);
+    renderCarousel();
     setStatus('');
   }, (err) => {
     console.error("Firebase read error:", err);
