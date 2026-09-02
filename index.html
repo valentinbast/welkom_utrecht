@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Onderweg naar Utrecht</title>
+<!-- Leaflet CSS for Interactive Map -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Source+Sans+3:wght@400;500;600&display=swap');
 
@@ -36,7 +38,7 @@
 
   a{ color:inherit; }
 
-  /* ---------- Header / countdown ---------- */
+  /* ---------- Header ---------- */
 
   header{
     background:var(--canal);
@@ -97,7 +99,7 @@
     color:var(--parchment);
   }
 
-  /* ---------- Highlights / Skimmer Section ---------- */
+  /* ---------- Carousel ---------- */
 
   .carousel-section {
     max-width:960px;
@@ -151,7 +153,7 @@
     align-items:center;
     justify-content:center;
     cursor:pointer;
-    transition:background 0.2s ease, opacity 0.2s ease;
+    transition:background 0.2s ease;
     z-index:10;
   }
   .carousel-btn:hover { background:var(--brick); }
@@ -168,7 +170,6 @@
     border-bottom-left-radius:var(--radius);
     border-bottom-right-radius:var(--radius);
     overflow-x:auto;
-    scrollbar-width:thin;
   }
 
   .thumb-item {
@@ -195,12 +196,62 @@
     font-style:italic;
   }
 
-  /* ---------- Gallery section ---------- */
+  /* ---------- Map Section ---------- */
+
+  .map-section {
+    max-width:960px;
+    margin:2rem auto 1rem;
+    padding:0 1.5rem;
+  }
+
+  .map-section h2 {
+    font-size:1.5rem;
+    margin-bottom:1rem;
+    color:var(--canal);
+  }
+
+  #map {
+    width:100%;
+    height:360px;
+    border-radius:var(--radius);
+    border:1px solid var(--line);
+    box-shadow:0 4px 16px rgba(28,43,41,0.06);
+    z-index:1;
+  }
+
+  .map-popup-content {
+    font-family:'Source Sans 3', sans-serif;
+    color:var(--ink);
+  }
+  .map-popup-content h4 {
+    margin:0 0 0.3rem;
+    font-family:'Fraunces', serif;
+    color:var(--canal);
+  }
+  .map-popup-content p {
+    margin:0 0 0.6rem;
+    font-size:0.85rem;
+    color:#5c6663;
+  }
+  .map-popup-thumbs {
+    display:flex;
+    gap:0.4rem;
+    overflow-x:auto;
+  }
+  .map-popup-thumb {
+    width:50px;
+    height:50px;
+    object-fit:cover;
+    border-radius:4px;
+    cursor:pointer;
+  }
+
+  /* ---------- Main & Gallery ---------- */
 
   main{
     max-width:960px;
     margin:0 auto;
-    padding:2rem 1.5rem 5rem;
+    padding:2rem 1.5rem 3rem;
   }
 
   .gallery-head{
@@ -214,9 +265,7 @@
     padding-bottom:1.1rem;
   }
 
-  .gallery-head h2{
-    font-size:1.6rem;
-  }
+  .gallery-head h2{ font-size:1.6rem; }
 
   .gallery-meta{
     display:flex;
@@ -333,6 +382,132 @@
     line-height:1;
   }
 
+  /* ---------- Journal ---------- */
+
+  .journal-section {
+    max-width:960px;
+    margin:2rem auto 5rem;
+    padding:0 1.5rem;
+  }
+
+  .journal-head {
+    border-bottom:1px solid var(--line);
+    padding-bottom:0.8rem;
+    margin-bottom:1.5rem;
+  }
+
+  .journal-head h2 {
+    font-size:1.6rem;
+    color:var(--canal);
+  }
+
+  .journal-form {
+    background:#e8e2d5;
+    padding:1.2rem;
+    border-radius:var(--radius);
+    margin-bottom:2rem;
+    border:1px solid var(--line);
+  }
+
+  .journal-form textarea {
+    width:100%;
+    min-height:80px;
+    padding:0.75rem;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    font-family:'Source Sans 3', sans-serif;
+    font-size:0.95rem;
+    background:var(--parchment);
+    color:var(--ink);
+    resize:vertical;
+    margin-bottom:0.8rem;
+  }
+
+  .journal-form textarea:focus {
+    outline:none;
+    border-color:var(--canal);
+  }
+
+  .journal-controls {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:0.75rem;
+  }
+
+  .audio-recorder {
+    display:flex;
+    align-items:center;
+    gap:0.5rem;
+  }
+
+  .btn-record {
+    background:transparent;
+    border:1px solid var(--brick);
+    color:var(--brick);
+    padding:0.5rem 0.9rem;
+    display:flex;
+    align-items:center;
+    gap:0.4rem;
+  }
+  .btn-record.recording {
+    background:var(--brick);
+    color:var(--parchment);
+    animation:pulse 1.2s infinite;
+  }
+
+  @keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+  }
+
+  .journal-list {
+    display:flex;
+    flex-direction:column;
+    gap:1rem;
+  }
+
+  .journal-card {
+    background:var(--parchment);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:1rem 1.2rem;
+    position:relative;
+    box-shadow:0 2px 8px rgba(0,0,0,0.03);
+  }
+
+  .journal-card-header {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:0.8rem;
+    color:#7a8582;
+    margin-bottom:0.5rem;
+  }
+
+  .journal-card-delete {
+    background:transparent;
+    border:none;
+    color:#a19b8f;
+    cursor:pointer;
+    font-size:1rem;
+  }
+  .journal-card-delete:hover { color:var(--brick); }
+
+  .journal-text {
+    font-size:0.98rem;
+    white-space:pre-wrap;
+    margin-bottom:0.5rem;
+  }
+
+  .journal-audio {
+    margin-top:0.6rem;
+    width:100%;
+    height:36px;
+  }
+
   /* ---------- Lightbox ---------- */
 
   .lightbox{
@@ -386,7 +561,6 @@
   </div>
 </header>
 
-<!-- NEW: Photo Highlights / Skimmer Section -->
 <section class="carousel-section">
   <h2>Hoogtepunten</h2>
   <div class="carousel-container">
@@ -398,6 +572,12 @@
     </div>
     <div id="carouselThumbs" class="carousel-thumbs" style="display:none;"></div>
   </div>
+</section>
+
+<!-- NEW: Interactive Map Section -->
+<section class="map-section">
+  <h2>Plekken in Utrecht</h2>
+  <div id="map"></div>
 </section>
 
 <main>
@@ -422,6 +602,28 @@
   </div>
 </main>
 
+<section class="journal-section">
+  <div class="journal-head">
+    <h2>Herinneringen & Spraakmemo's</h2>
+  </div>
+
+  <div class="journal-form">
+    <textarea id="noteInput" placeholder="Schrijf een mooie herinnering of gedachte..."></textarea>
+    <div class="journal-controls">
+      <div class="audio-recorder">
+        <button id="recordBtn" class="btn-record" type="button">
+          <span id="recordIcon">🎙️</span>
+          <span id="recordLabel">Inspreken</span>
+        </button>
+        <span id="recordTimer" style="font-size:0.85rem; color:var(--brick);"></span>
+      </div>
+      <button id="saveNoteBtn" class="btn-primary" type="button">Opslaan</button>
+    </div>
+  </div>
+
+  <div id="journalList" class="journal-list"></div>
+</section>
+
 <footer>
   Gemaakt voor twee.
 </footer>
@@ -432,6 +634,8 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -463,15 +667,29 @@
   const lightboxImg = document.getElementById('lightboxImg');
   const lightboxClose = document.getElementById('lightboxClose');
 
-  // Carousel / Skimmer Elements
+  // Carousel Elements
   const carouselImg = document.getElementById('carouselImg');
   const carouselEmpty = document.getElementById('carouselEmpty');
   const carouselPrev = document.getElementById('carouselPrev');
   const carouselNext = document.getElementById('carouselNext');
   const carouselThumbs = document.getElementById('carouselThumbs');
 
+  // Journal Elements
+  const noteInput = document.getElementById('noteInput');
+  const saveNoteBtn = document.getElementById('saveNoteBtn');
+  const recordBtn = document.getElementById('recordBtn');
+  const recordLabel = document.getElementById('recordLabel');
+  const recordIcon = document.getElementById('recordIcon');
+  const recordTimer = document.getElementById('recordTimer');
+  const journalList = document.getElementById('journalList');
+
   let currentPhotos = [];
   let carouselIndex = 0;
+
+  let mediaRecorder = null;
+  let audioChunks = [];
+  let recordedAudioBlob = null;
+  let isRecording = false;
 
   function setStatus(msg) { galleryStatus.textContent = msg || ''; }
 
@@ -493,7 +711,55 @@
   lightboxClose.addEventListener('click', closeLightbox);
   lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
 
-  // --- Carousel / Skimmer Controller ---
+  window.openLightboxFromMap = openLightbox;
+
+  // --- Interactive Leaflet Map ---
+  const utrechtCoords = [52.0907, 5.1214];
+  const map = L.map('map').setView(utrechtCoords, 14);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap contributors'
+  }).addTo(map);
+
+  const spots = [
+    { name: "Domtoren", coords: [52.0906, 5.1213], desc: "De iconische toren van Utrecht." },
+    { name: "Oudegracht", coords: [52.0892, 5.1205], desc: "Wandelen langs de werfskelders." },
+    { name: "Café de Zaak", coords: [52.0931, 5.1189], desc: "Gezellig een drankje doen." },
+    { name: "Wilhelminapark", coords: [52.0863, 5.1381], desc: "Ontspannen in het park." }
+  ];
+
+  function updateMapPopups() {
+    spots.forEach(spot => {
+      let popupHtml = `
+        <div class="map-popup-content">
+          <h4>${spot.name}</h4>
+          <p>${spot.desc}</p>
+      `;
+
+      if (currentPhotos.length > 0) {
+        popupHtml += `<div class="map-popup-thumbs">`;
+        currentPhotos.slice(0, 3).forEach(p => {
+          popupHtml += `<img src="${p.url}" class="map-popup-thumb" onclick="window.openLightboxFromMap('${p.url}')">`;
+        });
+        popupHtml += `</div>`;
+      } else {
+        popupHtml += `<p style="font-size:0.75rem; color:#8b8577; margin:0;">Nog geen foto's hier gekoppeld.</p>`;
+      }
+
+      popupHtml += `</div>`;
+
+      if (spot.marker) {
+        spot.marker.setPopupContent(popupHtml);
+      } else {
+        spot.marker = L.marker(spot.coords).addTo(map).bindPopup(popupHtml);
+      }
+    });
+  }
+
+  updateMapPopups();
+
+  // Carousel
   function renderCarousel() {
     if (currentPhotos.length === 0) {
       carouselEmpty.style.display = 'block';
@@ -517,7 +783,6 @@
     carouselNext.style.display = currentPhotos.length > 1 ? 'flex' : 'none';
     carouselThumbs.style.display = currentPhotos.length > 1 ? 'flex' : 'none';
 
-    // Render Thumbnail strip
     carouselThumbs.innerHTML = '';
     currentPhotos.forEach((item, idx) => {
       const thumb = document.createElement('img');
@@ -530,7 +795,6 @@
       carouselThumbs.appendChild(thumb);
     });
 
-    // Scroll active thumb into view
     const activeThumb = carouselThumbs.children[carouselIndex];
     if (activeThumb) {
       activeThumb.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
@@ -598,7 +862,7 @@
     return tile;
   }
 
-  // Live Listener: Listens for uploads from ANY device and renders them instantly
+  // Live Photos Listener
   const photosQuery = query(collection(db, "photos"), orderBy("createdAt", "asc"));
   onSnapshot(photosQuery, (snapshot) => {
     document.querySelectorAll('.gallery-tile').forEach(el => el.remove());
@@ -613,13 +877,14 @@
 
     updateCount(currentPhotos.length);
     renderCarousel();
+    updateMapPopups();
     setStatus('');
   }, (err) => {
     console.error("Firebase read error:", err);
     setStatus("Kon foto's niet laden.");
   });
 
-  // Client-side image compression before upload
+  // Client-side image compression
   function resizeImage(file, maxDim = 1600, quality = 0.85) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -647,7 +912,7 @@
     });
   }
 
-  // Upload handler
+  // Upload Photo
   async function addPhotos(files) {
     for (const file of files) {
       if (!file.type.startsWith('image/')) continue;
@@ -710,6 +975,135 @@
     } finally {
       downloadAllBtn.disabled = false;
     }
+  });
+
+  // Voice Recorder
+  recordBtn.addEventListener('click', async () => {
+    if (!isRecording) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+
+        mediaRecorder.ondataavailable = (e) => { audioChunks.push(e.data); };
+        mediaRecorder.onstop = () => {
+          recordedAudioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+        };
+
+        mediaRecorder.start();
+        isRecording = true;
+        recordBtn.classList.add('recording');
+        recordLabel.textContent = 'Stop opname';
+        recordIcon.textContent = '⏹️';
+        recordTimer.textContent = 'Opnemen...';
+      } catch (err) {
+        alert('Microfoon toegang is vereist om audio op te nemen.');
+      }
+    } else {
+      mediaRecorder.stop();
+      mediaRecorder.stream.getTracks().forEach(track => track.stop());
+      isRecording = false;
+      recordBtn.classList.remove('recording');
+      recordLabel.textContent = 'Opnieuw inspreken';
+      recordIcon.textContent = '🎙️';
+      recordTimer.textContent = 'Opname gereed!';
+    }
+  });
+
+  // Save Note & Audio
+  saveNoteBtn.addEventListener('click', async () => {
+    const text = noteInput.value.trim();
+
+    if (!text && !recordedAudioBlob) {
+      alert('Voeg een bericht of een spraakmemo toe.');
+      return;
+    }
+
+    saveNoteBtn.disabled = true;
+    saveNoteBtn.textContent = 'Opslaan…';
+
+    try {
+      let audioUrl = null;
+
+      if (recordedAudioBlob) {
+        const fileName = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.webm`;
+        const audioRef = ref(storage, `journal_audio/${fileName}`);
+        await uploadBytes(audioRef, recordedAudioBlob);
+        audioUrl = await getDownloadURL(audioRef);
+      }
+
+      await addDoc(collection(db, "journal"), {
+        text: text,
+        audioUrl: audioUrl,
+        createdAt: new Date()
+      });
+
+      noteInput.value = '';
+      recordedAudioBlob = null;
+      recordLabel.textContent = 'Inspreken';
+      recordTimer.textContent = '';
+    } catch (err) {
+      console.error("Error saving note:", err);
+      alert('Kon de herinnering niet opslaan.');
+    } finally {
+      saveNoteBtn.disabled = false;
+      saveNoteBtn.textContent = 'Opslaan';
+    }
+  });
+
+  // Live Journal Listener
+  const journalQuery = query(collection(db, "journal"), orderBy("createdAt", "desc"));
+  onSnapshot(journalQuery, (snapshot) => {
+    journalList.innerHTML = '';
+
+    snapshot.forEach((docSnap) => {
+      const data = docSnap.data();
+      const id = docSnap.id;
+
+      const card = document.createElement('div');
+      card.className = 'journal-card';
+
+      const dateStr = data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleString('nl-NL', {
+        dateStyle: 'medium',
+        timeStyle: 'short'
+      }) : '';
+
+      const header = document.createElement('div');
+      header.className = 'journal-card-header';
+      header.innerHTML = `<span>${dateStr}</span>`;
+
+      const deleteBtn = document.createElement('button');
+      deleteBtn.className = 'journal-card-delete';
+      deleteBtn.innerHTML = '✕';
+      deleteBtn.title = 'Verwijderen';
+      deleteBtn.addEventListener('click', async () => {
+        if (confirm("Weet je zeker dat je deze herinnering wilt verwijderen?")) {
+          await deleteDoc(doc(db, "journal", id));
+        }
+      });
+
+      header.appendChild(deleteBtn);
+      card.appendChild(header);
+
+      if (data.text) {
+        const textEl = document.createElement('div');
+        textEl.className = 'journal-text';
+        textEl.textContent = data.text;
+        card.appendChild(textEl);
+      }
+
+      if (data.audioUrl) {
+        const audioEl = document.createElement('audio');
+        audioEl.className = 'journal-audio';
+        audioEl.controls = true;
+        audioEl.src = data.audioUrl;
+        card.appendChild(audioEl);
+      }
+
+      journalList.appendChild(card);
+    });
+  }, (err) => {
+    console.error("Firebase journal read error:", err);
   });
 </script>
 
