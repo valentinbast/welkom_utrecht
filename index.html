@@ -1,1009 +1,571 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Welkom in Utrecht Paula!</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Onderweg naar Utrecht</title>
 <style>
-  :root {
-    --ink: #0d1f22;
-    --ink-soft: #14363c;
-    --water: #1c4d58;
-    --water-deep: #0d2d34;
-    --brick: #cc7f60;
-    --gold: #f0c76a;
-    --cream: #f7f1e8;
-    --sage: #bcd5c6;
-    --panel: rgba(16, 31, 33, 0.54);
-    --panel-border: rgba(255, 255, 255, 0.14);
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Source+Sans+3:wght@400;500;600&display=swap');
+
+  :root{
+    --ink:#1c2b29;
+    --canal:#1f3b3a;
+    --canal-light:#2f5250;
+    --parchment:#f2efe6;
+    --brick:#b5533c;
+    --gold:#c9a15a;
+    --line:#d8d2c2;
+    --radius:6px;
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  *{ box-sizing:border-box; }
 
-  html, body {
-    min-height: 100%;
-    height: auto;
+  body{
+    margin:0;
+    background:var(--parchment);
+    color:var(--ink);
+    font-family:'Source Sans 3', sans-serif;
+    line-height:1.5;
   }
 
-  body {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    padding: 32px 20px 96px;
-    overflow-x: hidden;
-    overflow-y: auto;
+  h1, h2{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    margin:0;
+  }
+
+  a{ color:inherit; }
+
+  /* ---------- Header / countdown ---------- */
+
+  header{
+    background:var(--canal);
+    color:var(--parchment);
+    padding:4.5rem 1.5rem 3.5rem;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+  }
+
+  header::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:0;
+    height:14px;
     background:
-      radial-gradient(120% 90% at 50% 0%, rgba(31, 78, 76, 0.9), rgba(12, 26, 29, 1) 45%, rgba(8, 17, 19, 1) 100%);
-    color: var(--cream);
-    font-family: 'Inter', sans-serif;
-    position: relative;
+      radial-gradient(circle at 10px 0, transparent 9px, var(--parchment) 10px) 0 -9px / 24px 14px repeat-x;
   }
 
-  body::before,
-  body::after {
-    content: "";
-    position: absolute;
-    width: 36rem;
-    height: 36rem;
-    border-radius: 50%;
-    filter: blur(70px);
-    pointer-events: none;
-    opacity: 0.5;
+  .eyebrow-word{
+    font-size:0.95rem;
+    letter-spacing:0.02em;
+    color:var(--gold);
+    margin-bottom:0.75rem;
   }
 
-  body::before {
-    top: -14rem;
-    left: -8rem;
-    background: rgba(240, 199, 106, 0.18);
+  header h1{
+    font-size:clamp(2.1rem, 5vw, 3.2rem);
+    max-width:20ch;
+    margin:0 auto 0.6rem;
   }
 
-  body::after {
-    bottom: -17rem;
-    right: -10rem;
-    background: rgba(82, 161, 174, 0.18);
+  #subtitle{
+    font-size:1.05rem;
+    color:#cfe0dd;
+    max-width:32ch;
+    margin:0 auto 2.4rem;
   }
 
-  .page-shell {
-    width: min(1240px, 100%);
-    position: relative;
-    z-index: 1;
-    margin: 0 auto;
-    padding: 28px clamp(18px, 4vw, 42px) 10px;
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 32px;
-    background: linear-gradient(180deg, rgba(17, 36, 38, 0.84), rgba(11, 20, 21, 0.6));
-    backdrop-filter: blur(10px);
-    box-shadow: 0 28px 80px rgba(0,0,0,0.32);
-    overflow: hidden;
+  .timer-box{
+    display:inline-block;
+    border:1px solid rgba(242,239,230,0.25);
+    border-radius:var(--radius);
+    padding:1.1rem 1.8rem;
+    background:rgba(242,239,230,0.06);
   }
 
-  .page-shell::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background:
-      linear-gradient(120deg, rgba(255,255,255,0.06), transparent 32%, transparent 68%, rgba(240,199,106,0.08));
-    pointer-events: none;
+  .timer-label{
+    font-size:0.8rem;
+    color:#a9c2be;
+    margin-bottom:0.35rem;
   }
 
-  .topbar {
-    position: relative;
-    z-index: 2;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 36px;
-    color: var(--sage);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.72rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-  }
-
-  .brand {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-  }
-
-  .brand::before {
-    content: "";
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--gold);
-    box-shadow: 0 0 18px rgba(240,199,106,0.9);
-  }
-
-  /* --- Intro (secondary, compact) --- */
-  .intro {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-    max-width: 46rem;
-    margin: 0 auto 2.6rem;
-  }
-
-  .eyebrow {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    letter-spacing: 0.28em;
-    text-transform: uppercase;
-    color: var(--sage);
-    margin-bottom: 1rem;
-  }
-
-  h1 {
-    font-family: 'Fraunces', serif;
-    font-weight: 600;
-    font-size: clamp(2rem, 4.4vw, 3.4rem);
-    line-height: 1;
-    letter-spacing: -0.03em;
-  }
-
-  h1 em {
-    font-style: italic;
-    color: var(--brick);
-    font-weight: 500;
-  }
-
-  .subtitle {
-    margin: 1rem auto 0;
-    max-width: 30rem;
-    font-size: 1rem;
-    color: var(--sage);
-    line-height: 1.6;
-  }
-
-  .city-tags {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.7rem;
-    margin-top: 1.3rem;
-  }
-
-  .chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.55rem;
-    padding: 0.52rem 0.8rem;
-    border-radius: 999px;
-    border: 1px solid rgba(255,255,255,0.1);
-    background: rgba(255,255,255,0.03);
-    color: var(--cream);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    backdrop-filter: blur(8px);
-    animation: floatChip 6s ease-in-out infinite;
-  }
-
-  .chip:nth-child(2) { animation-delay: 0.9s; }
-  .chip:nth-child(3) { animation-delay: 1.7s; }
-
-  .chip::before {
-    content: "";
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--gold);
-    box-shadow: 0 0 12px rgba(240,199,106,0.9);
-  }
-
-  .signal-stack {
-    display: flex;
-    justify-content: center;
-    gap: 0.8rem;
-    margin: 1.6rem auto 0;
-  }
-
-  .signal-photo {
-    width: 92px;
-    height: 92px;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 2px solid rgba(255,255,255,0.18);
-    box-shadow: 0 18px 40px rgba(0,0,0,0.28);
-    background: rgba(255,255,255,0.04);
-  }
-
-  .signal-photo img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
-  /* --- Gallery: the main event --- */
-  .gallery-section {
-    position: relative;
-    z-index: 2;
-  }
-
-  .gallery-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 0.9rem;
-    margin-bottom: 1.3rem;
-  }
-
-  .gallery-title {
-    font-family: 'Fraunces', serif;
-    font-size: clamp(1.6rem, 3vw, 2.2rem);
-    font-weight: 600;
-    color: var(--cream);
-  }
-
-  .gallery-count {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.68rem;
-    letter-spacing: 0.1em;
-    color: var(--sage);
-  }
-
-  .gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0.9rem;
-  }
-
-  .gallery-grid .gallery-tile:first-child,
-  .gallery-grid .gallery-tile:nth-child(5) {
-    grid-column: span 2;
-    grid-row: span 2;
-  }
-
-  .gallery-tile {
-    position: relative;
-    aspect-ratio: 1 / 1;
-    border-radius: 18px;
-    overflow: hidden;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.08);
-  }
-
-  .gallery-tile img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    cursor: pointer;
-    transition: transform 0.35s ease;
-  }
-
-  .gallery-tile img:hover {
-    transform: scale(1.04);
-  }
-
-  .gallery-remove {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    border: none;
-    background: rgba(9, 18, 19, 0.72);
-    color: var(--cream);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.85rem;
-    line-height: 1;
-    cursor: pointer;
-    opacity: 0;
-    transition: opacity 0.2s ease, background 0.2s ease;
-  }
-
-  .gallery-tile:hover .gallery-remove {
-    opacity: 1;
-  }
-
-  .gallery-remove:hover {
-    background: rgba(204, 127, 96, 0.85);
-  }
-
-  .gallery-download {
-    position: absolute;
-    top: 0.5rem;
-    left: 0.5rem;
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    border: none;
-    background: rgba(9, 18, 19, 0.72);
-    color: var(--cream);
-    font-size: 0.8rem;
-    line-height: 1;
-    cursor: pointer;
-    opacity: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    transition: opacity 0.2s ease, background 0.2s ease;
-  }
-
-  .gallery-tile:hover .gallery-download {
-    opacity: 1;
-  }
-
-  .gallery-download:hover {
-    background: rgba(240, 199, 106, 0.85);
-    color: var(--ink);
-  }
-
-  .gallery-head-actions {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.8rem;
-  }
-
-  .gallery-download-all {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.4rem 0.75rem;
-    border-radius: 999px;
-    border: 1px solid rgba(255,255,255,0.14);
-    background: rgba(255,255,255,0.03);
-    color: var(--sage);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: border-color 0.2s ease, color 0.2s ease;
-  }
-
-  .gallery-download-all:hover {
-    border-color: var(--gold);
-    color: var(--gold);
-  }
-
-  .gallery-download-all:disabled {
-    opacity: 0.4;
-    cursor: default;
-    border-color: rgba(255,255,255,0.14);
-    color: var(--sage);
-  }
-
-  .gallery-add-header {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.4rem 0.75rem;
-    border-radius: 999px;
-    border: 1px solid var(--gold);
-    background: rgba(240, 199, 106, 0.1);
-    color: var(--gold);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: background 0.2s ease, color 0.2s ease;
-  }
-
-  .gallery-add-header:hover {
-    background: var(--gold);
-    color: var(--ink);
-  }
-
-  .gallery-add {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    border: 1px dashed rgba(255,255,255,0.22);
-    border-radius: 18px;
-    background: transparent;
-    color: var(--sage);
-    cursor: pointer;
-    aspect-ratio: 1 / 1;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.64rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
-  }
-
-  .gallery-add:hover {
-    border-color: var(--gold);
-    color: var(--gold);
-    background: rgba(240,199,106,0.05);
-  }
-
-  .gallery-add .plus {
-    font-family: 'Fraunces', serif;
-    font-size: 2.2rem;
-    line-height: 1;
-    font-weight: 400;
-  }
-
-  .gallery-status {
-    margin-top: 1rem;
-    text-align: center;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.62rem;
-    letter-spacing: 0.08em;
-    color: var(--sage);
-    min-height: 0.9rem;
-  }
-
-  .lightbox {
-    position: fixed;
-    inset: 0;
-    z-index: 50;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    background: rgba(6, 12, 13, 0.86);
-    backdrop-filter: blur(6px);
-    padding: 2rem;
-  }
-
-  .lightbox.open {
-    display: flex;
-  }
-
-  .lightbox img {
-    max-width: min(90vw, 900px);
-    max-height: 85vh;
-    border-radius: 12px;
-    box-shadow: 0 30px 70px rgba(0,0,0,0.5);
-  }
-
-  .lightbox-close {
-    position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 1px solid rgba(255,255,255,0.2);
-    background: rgba(9,18,19,0.6);
-    color: var(--cream);
-    font-size: 1.1rem;
-    cursor: pointer;
-  }
-
-  .water-band {
-    position: relative;
-    margin-top: 28px;
-    width: min(1240px, 100%);
-    height: 110px;
-    background: linear-gradient(180deg, rgba(28,77,88,0.15), rgba(13,45,52,0.88));
-    border-radius: 0 0 28px 28px;
-    overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.06);
-    border-top: 0;
-  }
-
-  .water-band::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(
-      90deg,
-      transparent 0,
-      transparent 24px,
-      rgba(255,255,255,0.05) 24px,
-      rgba(255,255,255,0.05) 26px
-    );
-    opacity: 0.7;
-  }
-
-  .water-band::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, transparent 0%, rgba(240,199,106,0.16) 100%);
-  }
-
-  /* --- Timer: pushed to the background, a quiet floating badge --- */
-  .timer-badge {
-    position: fixed;
-    left: 1.2rem;
-    bottom: 1.2rem;
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    padding: 0.55rem 0.9rem;
-    border-radius: 999px;
-    border: 1px solid rgba(255,255,255,0.1);
-    background: rgba(10, 20, 22, 0.55);
-    backdrop-filter: blur(8px);
-    opacity: 0.7;
-    transition: opacity 0.25s ease;
-  }
-
-  .timer-badge:hover {
-    opacity: 1;
-  }
-
-  .timer-badge .dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--gold);
-    box-shadow: 0 0 10px rgba(240,199,106,0.8);
-    animation: pulse 2.8s ease-in-out infinite;
-    flex-shrink: 0;
-  }
-
-  .timer-badge .label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.58rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--sage);
-  }
-
-  .timer-badge .value {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.72rem;
-    font-weight: 600;
-    color: var(--cream);
+  #timerValue{
+    font-family:'Fraunces', serif;
+    font-size:clamp(1.5rem, 4vw, 2.1rem);
     font-variant-numeric: tabular-nums;
+    color:var(--parchment);
   }
 
-  @keyframes pulse {
-    0%, 100% { opacity: 0.4; transform: scale(0.9); }
-    50% { opacity: 1; transform: scale(1.1); }
+  /* ---------- Gallery section ---------- */
+
+  main{
+    max-width:960px;
+    margin:0 auto;
+    padding:3.5rem 1.5rem 5rem;
   }
 
-  @keyframes floatChip {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-3px); }
+  .gallery-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:0.75rem 1.5rem;
+    margin-bottom:1.6rem;
+    border-bottom:1px solid var(--line);
+    padding-bottom:1.1rem;
   }
 
-  @media (max-width: 700px) {
-    .gallery-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-
-    .gallery-grid .gallery-tile:first-child,
-    .gallery-grid .gallery-tile:nth-child(5) {
-      grid-column: span 2;
-      grid-row: span 1;
-    }
-
-    .timer-badge {
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: 0.9rem;
-    }
+  .gallery-head h2{
+    font-size:1.6rem;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { animation: none !important; transition: none !important; }
+  .gallery-meta{
+    display:flex;
+    align-items:center;
+    gap:1rem;
+    font-size:0.92rem;
+    color:#5c6663;
+  }
+
+  button{
+    font-family:'Source Sans 3', sans-serif;
+    font-size:0.92rem;
+    cursor:pointer;
+    border-radius:var(--radius);
+    transition:background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .btn-primary{
+    background:var(--brick);
+    color:var(--parchment);
+    border:1px solid var(--brick);
+    padding:0.6rem 1.1rem;
+    font-weight:500;
+  }
+  .btn-primary:hover{ background:#9c4531; }
+
+  .btn-secondary{
+    background:transparent;
+    color:var(--canal);
+    border:1px solid var(--line);
+    padding:0.6rem 1.1rem;
+  }
+  .btn-secondary:hover{ border-color:var(--canal); }
+  .btn-secondary:disabled{
+    opacity:0.4;
+    cursor:default;
+    border-color:var(--line);
+  }
+
+  #galleryStatus{
+    min-height:1.2em;
+    font-size:0.88rem;
+    color:var(--brick);
+    margin-bottom:1rem;
+  }
+
+  .gallery-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(160px, 1fr));
+    gap:0.8rem;
+  }
+
+  .gallery-tile{
+    position:relative;
+    aspect-ratio:1;
+    border-radius:var(--radius);
+    overflow:hidden;
+    background:#e4ded0;
+  }
+
+  .gallery-tile img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+    cursor:zoom-in;
+  }
+
+  .gallery-download,
+  .gallery-remove{
+    position:absolute;
+    top:6px;
+    width:28px;
+    height:28px;
+    border:none;
+    border-radius:50%;
+    background:rgba(28,43,41,0.65);
+    color:#fff;
+    font-size:0.85rem;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    opacity:0;
+    transition:opacity 0.15s ease, background 0.15s ease;
+  }
+  .gallery-tile:hover .gallery-download,
+  .gallery-tile:hover .gallery-remove{ opacity:1; }
+
+  .gallery-download{ right:40px; }
+  .gallery-remove{ right:6px; }
+  .gallery-download:hover{ background:var(--canal); }
+  .gallery-remove:hover{ background:var(--brick); }
+
+  .add-tile{
+    aspect-ratio:1;
+    border:1.5px dashed var(--line);
+    border-radius:var(--radius);
+    background:transparent;
+    color:#8b8577;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:0.35rem;
+    font-size:0.85rem;
+  }
+  .add-tile:hover{
+    border-color:var(--canal);
+    color:var(--canal);
+  }
+  .add-tile .plus{
+    font-family:'Fraunces', serif;
+    font-size:1.8rem;
+    line-height:1;
+  }
+
+  /* ---------- Lightbox ---------- */
+
+  .lightbox{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(17,24,23,0.9);
+    align-items:center;
+    justify-content:center;
+    padding:2rem;
+    z-index:50;
+  }
+  .lightbox.open{ display:flex; }
+  .lightbox img{
+    max-width:100%;
+    max-height:100%;
+    border-radius:4px;
+  }
+  .lightbox-close{
+    position:absolute;
+    top:1.2rem;
+    right:1.5rem;
+    background:transparent;
+    border:none;
+    color:#f2efe6;
+    font-size:1.8rem;
+    line-height:1;
+  }
+
+  footer{
+    text-align:center;
+    font-size:0.82rem;
+    color:#8b8577;
+    padding:0 1.5rem 3rem;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition:none !important; }
   }
 </style>
-
 </head>
 <body>
-  <div class="page-shell">
-    <header class="topbar">
-      <div class="brand">Utrecht · Paula</div>
-    </header>
 
-    <section class="intro">
-      <div class="eyebrow">Onze grachtenstad</div>
-      <h1>Welkom <em>in</em> Utrecht, Paula!</h1>
-      <p class="subtitle" id="subtitle">Nog even geduld — dan sta je middenin de grachten.</p>
+<header>
+  <div class="eyebrow-word">Utrecht</div>
+  <h1>De reis naar de grachten is bijna voorbij</h1>
+  <p id="subtitle">Laden…</p>
+  <div class="timer-box">
+    <div class="timer-label">Nog te gaan</div>
+    <div id="timerValue">—</div>
+  </div>
+</header>
 
-      <div class="city-tags" aria-label="Utrecht highlights">
-        <span class="chip">Oudegracht</span>
-        <span class="chip">Domtoren</span>
-        <span class="chip">Janskerkhof</span>
-      </div>
-
-      <div class="signal-stack" aria-label="Signal artwork collection">
-        <div class="signal-photo" aria-label="Signal artwork one">
-          <img src="media/daphne.jpg" alt="Signal artwork one" />
-        </div>
-        <div class="signal-photo" aria-label="Signal artwork two">
-          <img src="media/paula_crazy.jpg" alt="Signal artwork two" />
-        </div>
-        <div class="signal-photo" aria-label="Signal artwork two">
-          <img src="media/valentin.jpg" alt="Signal artwork two" />
-        </div>
-      </div>
-    </section>
-
-    <section class="gallery-section" aria-label="Foto's van het bezoek">
-      <div class="gallery-head">
-        <span class="gallery-title">Foto's van het bezoek</span>
-        <div class="gallery-head-actions">
-          <button class="gallery-add-header" id="galleryAddBtnHeader" type="button">+ Foto toevoegen</button>
-          <button class="gallery-download-all" id="downloadAllBtn" type="button" disabled>Alles downloaden</button>
-          <span class="gallery-count" id="galleryCount">0 foto's</span>
-        </div>
-      </div>
-      <div class="gallery-grid" id="galleryGrid">
-        <button class="gallery-add" id="galleryAddBtn" type="button">
-          <span class="plus">+</span>
-          <span>Foto toevoegen</span>
-        </button>
-      </div>
-      <input type="file" id="galleryInput" accept="image/*" multiple hidden />
-      <div class="gallery-status" id="galleryStatus"></div>
-    </section>
+<main>
+  <div class="gallery-head">
+    <h2>Samen verzameld</h2>
+    <div class="gallery-meta">
+      <span id="galleryCount">0 foto's</span>
+      <button id="downloadAllBtn" class="btn-secondary" disabled>Alles downloaden</button>
+      <button id="galleryAddBtnHeader" class="btn-primary">Foto toevoegen</button>
+    </div>
   </div>
 
-  <div class="water-band" aria-hidden="true"></div>
+  <p id="galleryStatus"></p>
 
-  <!-- Timer: intentionally understated, tucked away in the corner -->
-  <div class="timer-badge" aria-label="Aankomst countdown">
-    <span class="dot"></span>
-    <span class="label">Domtoren over</span>
-    <span class="value" id="timerValue">—</span>
+  <input id="galleryInput" type="file" accept="image/*" multiple style="display:none;">
+
+  <div id="galleryGrid" class="gallery-grid">
+    <button id="galleryAddBtn" class="add-tile" type="button">
+      <span class="plus">+</span>
+      <span>Foto toevoegen</span>
+    </button>
   </div>
+</main>
 
-  <div class="lightbox" id="lightbox">
-    <button class="lightbox-close" id="lightboxClose" type="button">✕</button>
-    <img id="lightboxImg" src="" alt="Vergrote foto" />
-  </div>
+<footer>
+  Gemaakt voor twee.
+</footer>
 
-  <script>
-    const TARGET_DATE = "2026-08-29T21:36:00";
-    const SUBTITLE_TEXT = "Nog even geduld — dan sta je middenin de grachten.";
+<div id="lightbox" class="lightbox">
+  <button id="lightboxClose" class="lightbox-close" aria-label="Sluiten">&times;</button>
+  <img id="lightboxImg" src="" alt="">
+</div>
 
-    const subtitle = document.getElementById('subtitle');
-    const target = new Date(TARGET_DATE).getTime();
-    const timerValue = document.getElementById('timerValue');
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
-    subtitle.textContent = SUBTITLE_TEXT;
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+  import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    function pad(value) {
-      return String(value).padStart(2, '0');
+  // 1. Paste your Firebase credentials here:
+  const firebaseConfig = {
+    apiKey: "AIzaSyAhLDFnxEsKsG9Sn2IoXP5UfhtXGy-Lv3o",
+    authDomain: "utrecht-gallery-19444.firebaseapp.com",
+    projectId: "utrecht-gallery-19444",
+    storageBucket: "utrecht-gallery-19444.firebasestorage.app",
+    messagingSenderId: "95595424229",
+    appId: "1:95595424229:web:ead8dca64cbd30f6a8e70c"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const storage = getStorage(app);
+  const db = getFirestore(app);
+
+  // --- Countdown Timer ---
+  const TARGET_DATE = "2026-08-29T21:36:00";
+  const SUBTITLE_TEXT = "Nog even geduld — dan sta je middenin de grachten.";
+  const subtitle = document.getElementById('subtitle');
+  const target = new Date(TARGET_DATE).getTime();
+  const timerValue = document.getElementById('timerValue');
+
+  subtitle.textContent = SUBTITLE_TEXT;
+
+  function pad(value) { return String(value).padStart(2, '0'); }
+
+  function tick() {
+    const now = Date.now();
+    const diff = target - now;
+
+    if (diff <= 0) {
+      subtitle.textContent = 'Welkom thuis in Utrecht. 🎉';
+      timerValue.textContent = 'aangekomen';
+      return;
     }
 
-    let timerInterval = null;
+    const days = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000) / 3600000);
+    const minutes = Math.floor((diff % 3600000) / 60000);
+    const seconds = Math.floor((diff % 60000) / 1000);
 
-    function tick() {
-      const now = Date.now();
-      const diff = target - now;
+    timerValue.textContent = `${days}d ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+  }
+  tick();
+  setInterval(tick, 1000);
 
-      if (diff <= 0) {
-        subtitle.textContent = 'Welkom thuis in Utrecht. 🎉';
-        timerValue.textContent = 'aangekomen';
-        if (timerInterval) clearInterval(timerInterval);
-        return;
-      }
+  // --- Public Gallery (Shared across all users/devices) ---
+  const galleryGrid = document.getElementById('galleryGrid');
+  const galleryAddBtn = document.getElementById('galleryAddBtn');
+  const galleryAddBtnHeader = document.getElementById('galleryAddBtnHeader');
+  const galleryInput = document.getElementById('galleryInput');
+  const galleryCount = document.getElementById('galleryCount');
+  const galleryStatus = document.getElementById('galleryStatus');
+  const downloadAllBtn = document.getElementById('downloadAllBtn');
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightboxImg');
+  const lightboxClose = document.getElementById('lightboxClose');
 
-      const days = Math.floor(diff / 86400000);
-      const hours = Math.floor((diff % 86400000) / 3600000);
-      const minutes = Math.floor((diff % 3600000) / 60000);
-      const seconds = Math.floor((diff % 60000) / 1000);
+  let currentPhotos = [];
 
-      timerValue.textContent = `${days}d ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
-    }
+  function setStatus(msg) { galleryStatus.textContent = msg || ''; }
 
-    tick();
-    timerInterval = setInterval(tick, 1000);
+  function updateCount(n) {
+    galleryCount.textContent = n === 1 ? '1 foto' : `${n} foto's`;
+    downloadAllBtn.disabled = n === 0;
+  }
 
-    // --- Gallery: persisted via window.storage (personal, this browser/account only) ---
-    const GALLERY_INDEX_KEY = 'gallery-index';
-    const galleryGrid = document.getElementById('galleryGrid');
-    const galleryAddBtn = document.getElementById('galleryAddBtn');
-    const galleryAddBtnHeader = document.getElementById('galleryAddBtnHeader');
-    const galleryInput = document.getElementById('galleryInput');
-    const galleryCount = document.getElementById('galleryCount');
-    const galleryStatus = document.getElementById('galleryStatus');
-    const downloadAllBtn = document.getElementById('downloadAllBtn');
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightboxImg');
-    const lightboxClose = document.getElementById('lightboxClose');
+  function openLightbox(src) {
+    lightboxImg.src = src;
+    lightbox.classList.add('open');
+  }
 
-    // Storage layer: prefer Claude's window.storage (works when viewed inside
-    // Claude). When this file is downloaded and opened directly in a normal
-    // browser, window.storage won't exist, so we fall back to localStorage,
-    // and finally to an in-memory Map if even that is blocked (e.g. some
-    // browsers restrict localStorage for file:// pages).
-    const memoryStore = new Map();
-    const LS_PREFIX = 'utrecht-gallery::';
-    let storageMode = 'memory';
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    lightboxImg.src = '';
+  }
 
-    function lsAvailable() {
-      try {
-        const testKey = '__utrecht_gallery_test__';
-        localStorage.setItem(testKey, '1');
-        localStorage.removeItem(testKey);
-        return true;
-      } catch (e) {
-        return false;
-      }
-    }
+  lightboxClose.addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
 
-    if (window.storage && typeof window.storage.get === 'function') {
-      storageMode = 'claude';
-    } else if (lsAvailable()) {
-      storageMode = 'local';
-    }
+  function downloadDataUrl(url, filename) {
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  }
 
-    async function storageGet(key) {
-      if (storageMode === 'claude') {
-        try {
-          return await window.storage.get(key, false);
-        } catch (e) {
-          return null;
-        }
-      }
-      if (storageMode === 'local') {
-        const raw = localStorage.getItem(LS_PREFIX + key);
-        return raw !== null ? { key, value: raw } : null;
-      }
-      return memoryStore.has(key) ? { key, value: memoryStore.get(key) } : null;
-    }
+  function makeTile(id, url) {
+    const tile = document.createElement('div');
+    tile.className = 'gallery-tile';
+    tile.dataset.id = id;
 
-    async function storageSet(key, value) {
-      if (storageMode === 'claude') {
-        try {
-          return await window.storage.set(key, value, false);
-        } catch (e) {
-          return null;
-        }
-      }
-      if (storageMode === 'local') {
-        try {
-          localStorage.setItem(LS_PREFIX + key, value);
-          return { key, value };
-        } catch (e) {
-          return null;
-        }
-      }
-      memoryStore.set(key, value);
-      return { key, value };
-    }
+    const img = document.createElement('img');
+    img.src = url;
+    img.alt = 'Foto van het bezoek';
+    img.addEventListener('click', () => openLightbox(url));
 
-    async function storageDelete(key) {
-      if (storageMode === 'claude') {
-        try {
-          return await window.storage.delete(key, false);
-        } catch (e) {
-          return null;
-        }
-      }
-      if (storageMode === 'local') {
-        localStorage.removeItem(LS_PREFIX + key);
-        return { key, deleted: true };
-      }
-      memoryStore.delete(key);
-      return { key, deleted: true };
-    }
-
-    function setStatus(msg) {
-      galleryStatus.textContent = msg || '';
-    }
-
-    function updateCount(n) {
-      galleryCount.textContent = n === 1 ? '1 foto' : `${n} foto's`;
-      downloadAllBtn.disabled = n === 0;
-    }
-
-    function openLightbox(src) {
-      lightboxImg.src = src;
-      lightbox.classList.add('open');
-    }
-
-    function closeLightbox() {
-      lightbox.classList.remove('open');
-      lightboxImg.src = '';
-    }
-
-    lightboxClose.addEventListener('click', closeLightbox);
-    lightbox.addEventListener('click', (e) => {
-      if (e.target === lightbox) closeLightbox();
+    const downloadBtn = document.createElement('button');
+    downloadBtn.className = 'gallery-download';
+    downloadBtn.type = 'button';
+    downloadBtn.title = 'Downloaden';
+    downloadBtn.textContent = '⬇';
+    downloadBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      downloadDataUrl(url, `utrecht-${id}.jpg`);
     });
 
-    function downloadDataUrl(dataUrl, filename) {
-      const link = document.createElement('a');
-      link.href = dataUrl;
-      link.download = filename;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    }
-
-    function makeTile(id, dataUrl) {
-      const tile = document.createElement('div');
-      tile.className = 'gallery-tile';
-      tile.dataset.id = id;
-
-      const img = document.createElement('img');
-      img.src = dataUrl;
-      img.alt = 'Foto van het bezoek';
-      img.addEventListener('click', () => openLightbox(dataUrl));
-
-      const downloadBtn = document.createElement('button');
-      downloadBtn.className = 'gallery-download';
-      downloadBtn.type = 'button';
-      downloadBtn.title = 'Downloaden';
-      downloadBtn.textContent = '⬇';
-      downloadBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        downloadDataUrl(dataUrl, `utrecht-${id}.jpg`);
-      });
-
-      const removeBtn = document.createElement('button');
-      removeBtn.className = 'gallery-remove';
-      removeBtn.type = 'button';
-      removeBtn.title = 'Verwijderen';
-      removeBtn.textContent = '✕';
-      removeBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        removePhoto(id, tile);
-      });
-
-      tile.appendChild(img);
-      tile.appendChild(downloadBtn);
-      tile.appendChild(removeBtn);
-      return tile;
-    }
-
-    async function getIndex() {
-      try {
-        const result = await storageGet(GALLERY_INDEX_KEY);
-        if (result && result.value) return JSON.parse(result.value);
-        return [];
-      } catch (err) {
-        return [];
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'gallery-remove';
+    removeBtn.type = 'button';
+    removeBtn.title = 'Verwijderen';
+    removeBtn.textContent = '✕';
+    removeBtn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      if (confirm("Weet je zeker dat je deze foto voor iedereen wilt verwijderen?")) {
+        await deleteDoc(doc(db, "photos", id));
       }
-    }
+    });
 
-    async function saveIndex(ids) {
-      try {
-        await storageSet(GALLERY_INDEX_KEY, JSON.stringify(ids));
-      } catch (err) {
-        console.error('Kon fotolijst niet opslaan', err);
-      }
-    }
+    tile.appendChild(img);
+    tile.appendChild(downloadBtn);
+    tile.appendChild(removeBtn);
+    return tile;
+  }
 
-    async function loadGallery() {
-      setStatus('Foto\u2019s laden…');
-      const ids = await getIndex();
-      updateCount(ids.length);
-      for (const id of ids) {
-        try {
-          const result = await storageGet(`gallery-photo:${id}`);
-          if (result && result.value) {
-            galleryGrid.insertBefore(makeTile(id, result.value), galleryAddBtn);
+  // Live Listener: Listens for uploads from ANY device and renders them instantly
+  const photosQuery = query(collection(db, "photos"), orderBy("createdAt", "asc"));
+  onSnapshot(photosQuery, (snapshot) => {
+    // Clear current tiles except for the "+ Foto toevoegen" tile
+    document.querySelectorAll('.gallery-tile').forEach(el => el.remove());
+
+    currentPhotos = [];
+    snapshot.forEach((docSnap) => {
+      const data = docSnap.data();
+      const id = docSnap.id;
+      currentPhotos.push({ id, url: data.url });
+      galleryGrid.insertBefore(makeTile(id, data.url), galleryAddBtn);
+    });
+
+    updateCount(currentPhotos.length);
+    setStatus('');
+  }, (err) => {
+    console.error("Firebase read error:", err);
+    setStatus("Kon foto's niet laden.");
+  });
+
+  // Client-side image compression before upload
+  function resizeImage(file, maxDim = 1600, quality = 0.85) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error('Bestand kon niet worden gelezen'));
+      reader.onload = () => {
+        const img = new Image();
+        img.onerror = () => reject(new Error('Afbeelding kon niet worden geladen'));
+        img.onload = () => {
+          let { width, height } = img;
+          if (width > maxDim || height > maxDim) {
+            const scale = maxDim / Math.max(width, height);
+            width = Math.round(width * scale);
+            height = Math.round(height * scale);
           }
-        } catch (err) {
-          // skip missing/broken entries
-        }
-      }
-      if (storageMode === 'memory') {
-        setStatus('Let op: foto\u2019s blijven alleen bewaard zolang deze pagina open staat.');
-      } else {
-        setStatus('');
-      }
-    }
-
-    function resizeImage(file, maxDim = 1600, quality = 0.85) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onerror = () => reject(new Error('Bestand kon niet worden gelezen'));
-        reader.onload = () => {
-          const img = new Image();
-          img.onerror = () => reject(new Error('Afbeelding kon niet worden geladen'));
-          img.onload = () => {
-            let { width, height } = img;
-            if (width > maxDim || height > maxDim) {
-              const scale = maxDim / Math.max(width, height);
-              width = Math.round(width * scale);
-              height = Math.round(height * scale);
-            }
-            const canvas = document.createElement('canvas');
-            canvas.width = width;
-            canvas.height = height;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, width, height);
-            resolve(canvas.toDataURL('image/jpeg', quality));
-          };
-          img.src = reader.result;
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          canvas.toBlob((blob) => resolve(blob), 'image/jpeg', quality);
         };
-        reader.readAsDataURL(file);
-      });
-    }
-
-    async function addPhotos(files) {
-      const ids = await getIndex();
-      for (const file of files) {
-        if (!file.type.startsWith('image/')) continue;
-        setStatus(`Bezig met opslaan: ${file.name}…`);
-        try {
-          const dataUrl = await resizeImage(file);
-          const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-          const result = await storageSet(`gallery-photo:${id}`, dataUrl);
-          if (!result) throw new Error('Opslaan mislukt');
-          ids.push(id);
-          galleryGrid.insertBefore(makeTile(id, dataUrl), galleryAddBtn);
-          updateCount(ids.length);
-        } catch (err) {
-          console.error(err);
-          setStatus(`Kon "${file.name}" niet opslaan${storageMode === 'local' ? ' (mogelijk te groot voor lokale opslag)' : ''}.`);
-        }
-      }
-      await saveIndex(ids);
-      if (storageMode === 'memory') {
-        setStatus('Let op: foto\u2019s blijven alleen bewaard zolang deze pagina open staat.');
-      } else {
-        setStatus('');
-      }
-    }
-
-    async function removePhoto(id, tileEl) {
-      try {
-        await storageDelete(`gallery-photo:${id}`);
-        const ids = (await getIndex()).filter((existing) => existing !== id);
-        await saveIndex(ids);
-        tileEl.remove();
-        updateCount(ids.length);
-      } catch (err) {
-        console.error('Kon foto niet verwijderen', err);
-        setStatus('Kon foto niet verwijderen.');
-      }
-    }
-
-    galleryAddBtn.addEventListener('click', () => galleryInput.click());
-    galleryAddBtnHeader.addEventListener('click', () => galleryInput.click());
-    galleryInput.addEventListener('change', (e) => {
-      const files = Array.from(e.target.files || []);
-      if (files.length) addPhotos(files);
-      galleryInput.value = '';
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
     });
+  }
 
-    downloadAllBtn.addEventListener('click', async () => {
-      if (typeof JSZip === 'undefined') {
-        setStatus('Zip-bibliotheek kon niet worden geladen — controleer je internetverbinding.');
+  // Upload handler (Pushes images to the cloud)
+  async function addPhotos(files) {
+    for (const file of files) {
+      if (!file.type.startsWith('image/')) continue;
+      setStatus(`Bezig met uploaden: ${file.name}…`);
+      try {
+        const compressedBlob = await resizeImage(file);
+        const fileName = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.jpg`;
+        const storageRef = ref(storage, `gallery/${fileName}`);
+
+        await uploadBytes(storageRef, compressedBlob);
+        const downloadURL = await getDownloadURL(storageRef);
+
+        await addDoc(collection(db, "photos"), {
+          url: downloadURL,
+          createdAt: new Date()
+        });
+      } catch (err) {
+        console.error("Upload error:", err);
+        setStatus(`Kon "${file.name}" niet uploaden.`);
+      }
+    }
+  }
+
+  galleryAddBtn.addEventListener('click', () => galleryInput.click());
+  galleryAddBtnHeader.addEventListener('click', () => galleryInput.click());
+  galleryInput.addEventListener('change', (e) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length) addPhotos(files);
+    galleryInput.value = '';
+  });
+
+  downloadAllBtn.addEventListener('click', async () => {
+    if (typeof JSZip === 'undefined') {
+      setStatus('Zip-bibliotheek kon niet worden geladen.');
+      return;
+    }
+    downloadAllBtn.disabled = true;
+    setStatus('Zip-bestand maken…');
+    try {
+      const zip = new JSZip();
+      let count = 0;
+      for (const item of currentPhotos) {
+        const resp = await fetch(item.url);
+        const blob = await resp.blob();
+        zip.file(`utrecht-${item.id}.jpg`, blob);
+        count++;
+      }
+      if (count === 0) {
+        setStatus("Geen foto's om te downloaden.");
         return;
       }
-      downloadAllBtn.disabled = true;
-      setStatus('Zip-bestand maken…');
-      try {
-        const ids = await getIndex();
-        const zip = new JSZip();
-        let count = 0;
-        for (const id of ids) {
-          const result = await storageGet(`gallery-photo:${id}`);
-          if (result && result.value) {
-            const base64 = result.value.split(',')[1];
-            zip.file(`utrecht-${id}.jpg`, base64, { base64: true });
-            count++;
-          }
-        }
-        if (count === 0) {
-          setStatus('Geen foto\u2019s om te downloaden.');
-          return;
-        }
-        const blob = await zip.generateAsync({ type: 'blob' });
-        const url = URL.createObjectURL(blob);
-        downloadDataUrl(url, 'utrecht-fotos.zip');
-        URL.revokeObjectURL(url);
-        setStatus('');
-      } catch (err) {
-        console.error(err);
-        setStatus('Kon zip-bestand niet maken.');
-      } finally {
-        downloadAllBtn.disabled = false;
-      }
-    });
+      const zipBlob = await zip.generateAsync({ type: 'blob' });
+      const url = URL.createObjectURL(zipBlob);
+      downloadDataUrl(url, 'utrecht-fotos.zip');
+      URL.revokeObjectURL(url);
+      setStatus('');
+    } catch (err) {
+      console.error(err);
+      setStatus('Kon zip-bestand niet maken.');
+    } finally {
+      downloadAllBtn.disabled = false;
+    }
+  });
+</script>
 
-    loadGallery();
-  </script>
 </body>
 </html>
