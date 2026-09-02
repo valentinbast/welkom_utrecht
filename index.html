@@ -279,9 +279,13 @@
 <body>
 
 <header>
-<div class="eyebrow-word">Gallery</div>
-<h1>Paula und Vali Utrecht 29.08-01.09.2026</h1>
-<p id="subtitle"></p> 
+  <div class="eyebrow-word">Gallery</div>
+  <h1>Paula und Vali Utrecht 29.08-01.09.2026</h1>
+  <p id="subtitle">Welkom thuis in Utrecht. 🎉</p>
+  <div class="timer-box">
+    <div class="timer-label">Status</div>
+    <div id="timerValue">0d 00:00:00</div>
+  </div>
 </header>
 
 <main>
@@ -322,7 +326,6 @@
   import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
   import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-  // 1. Paste your Firebase credentials here:
   const firebaseConfig = {
     apiKey: "AIzaSyAhLDFnxEsKsG9Sn2IoXP5UfhtXGy-Lv3o",
     authDomain: "utrecht-gallery-19444.firebaseapp.com",
@@ -335,37 +338,6 @@
   const app = initializeApp(firebaseConfig);
   const storage = getStorage(app);
   const db = getFirestore(app);
-
-  // --- Countdown Timer ---
-  const TARGET_DATE = "2026-08-29T21:36:00";
-  const SUBTITLE_TEXT = "Nog even geduld — dan sta je middenin de grachten.";
-  const subtitle = document.getElementById('subtitle');
-  const target = new Date(TARGET_DATE).getTime();
-  const timerValue = document.getElementById('timerValue');
-
-  subtitle.textContent = SUBTITLE_TEXT;
-
-  function pad(value) { return String(value).padStart(2, '0'); }
-
-  function tick() {
-    const now = Date.now();
-    const diff = target - now;
-
-    if (diff <= 0) {
-      subtitle.textContent = 'Welkom thuis in Utrecht. 🎉';
-      timerValue.textContent = 'aangekomen';
-      return;
-    }
-
-    const days = Math.floor(diff / 86400000);
-    const hours = Math.floor((diff % 86400000) / 3600000);
-    const minutes = Math.floor((diff % 3600000) / 60000);
-    const seconds = Math.floor((diff % 60000) / 1000);
-
-    timerValue.textContent = `${days}d ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
-  }
-  tick();
-  setInterval(tick, 1000);
 
   // --- Public Gallery (Shared across all users/devices) ---
   const galleryGrid = document.getElementById('galleryGrid');
@@ -451,7 +423,6 @@
   // Live Listener: Listens for uploads from ANY device and renders them instantly
   const photosQuery = query(collection(db, "photos"), orderBy("createdAt", "asc"));
   onSnapshot(photosQuery, (snapshot) => {
-    // Clear current tiles except for the "+ Foto toevoegen" tile
     document.querySelectorAll('.gallery-tile').forEach(el => el.remove());
 
     currentPhotos = [];
@@ -497,7 +468,7 @@
     });
   }
 
-  // Upload handler (Pushes images to the cloud)
+  // Upload handler
   async function addPhotos(files) {
     for (const file of files) {
       if (!file.type.startsWith('image/')) continue;
